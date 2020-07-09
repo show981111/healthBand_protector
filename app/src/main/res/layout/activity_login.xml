@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/background_gradient"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:background="#ffffff"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:padding="15dp"
+        >
+
+        <EditText
+            android:id="@+id/et_loginEmail"
+            android:drawablePadding="20dp"
+            android:drawableRight="@drawable/ic_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="hanium@gmail.com"/>
+        <EditText
+            android:id="@+id/et_loginPassword"
+            android:drawablePadding="20dp"
+            android:layout_width="match_parent"
+            android:drawableRight="@drawable/ic_password"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:hint="********"/>
+        <Button
+            android:id="@+id/bt_login"
+            android:background="@drawable/button_background"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ID/PW로 로그인"/>
+
+        <Button
+            android:id="@+id/bt_loginBluetooth"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_background"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="블루투스 로그인"/>
+
+        <Button
+            android:id="@+id/bt_loginRegister"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_background"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="회원가입"/>
+
+
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>

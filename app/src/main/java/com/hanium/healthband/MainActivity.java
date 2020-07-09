@@ -13,6 +13,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Handler;
 
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
+
 public class MainActivity extends AppCompatActivity {
 
     String getData;
@@ -37,21 +40,20 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 //connect Arduino and get Data
+                //여기서 블루투스 아두이노 연결해서 1초 간격으로 데이터들을 받아오면은...
                 getData = "";
 
 
-                //1초간격으로 데이터를 보냄
+                //여기서 1초간격으로 데이터를 서버로 보냄
                 TimerTask myTimerTask = new TimerTask() {
                     @Override
                     public void run() {
-                        Log.d("resGetting","gogo");
-                        android.os.Handler handler = new android.os.Handler(Looper.getMainLooper());
-                        Connect connect = new Connect(handler, tv_hanium);
-                        connect.sendData(data,"http://show981111.cafe24.com/testUpdata.php");
+                        Connect connect = new Connect(MainActivity.this, tv_hanium);
+                        connect.postData(data,"http://show981111.cafe24.com/testUpdata.php");
                         data++;
                     }
                 };
-                t.scheduleAtFixedRate(myTimerTask, 0, 1000);
+                t.scheduleAtFixedRate(myTimerTask, 0, 1000);//1초 간격 세팅
 
             }
         });
@@ -61,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 t.cancel();
             }
-        });
+        });//데이터 전송 중단
 
 
     }

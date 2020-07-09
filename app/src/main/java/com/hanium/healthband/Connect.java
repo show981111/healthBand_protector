@@ -1,5 +1,6 @@
 package com.hanium.healthband;
 
+import android.content.Context;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.TextView;
@@ -8,6 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Handler;
 
 import okhttp3.Call;
@@ -20,30 +23,27 @@ import okhttp3.Response;
 
 public class Connect {//connect to server class
 
-    private android.os.Handler handler ;
+    private Context context;
+    private android.os.Handler handler;// 서버와의 연결 후에 서버에서 보내주는 데이터를 토데로 UI를 업데이트 하기 위해서 핸들러 준비
     private TextView tv_sendData ;
-    int i = 0;
-    public Connect(android.os.Handler handler, TextView tv_sendData) {
-        this.handler = handler;
+    private int i = 0;
+
+    public Connect(Context context, TextView tv_sendData) {
+        this.handler = new android.os.Handler(Looper.getMainLooper());//핸들러 초기화
         this.tv_sendData = tv_sendData;
+        this.context = context;
     }
 
-
-    void sendData(int data, String url){//send Data
+    void postData(int data ,String url){//send Data
 
         try {
-            Log.d("resGetting","start");
-            OkHttpClient client = new OkHttpClient();
+            OkHttpClient client = new OkHttpClient();//http 연결 라이브러리로 okhttp 라이브러리 사용
 
-            RequestBody formBody = new FormBody.Builder()
+            RequestBody formBody = new FormBody.Builder()//요청 빌드하고
                     .add("data", String.valueOf(data))
                     .build();
 
-//            Request request = new Request.Builder()
-//                    .url(url)
-//                    .post(formBody)
-//                    .build();
-            Request request = new Request.Builder()
+            Request request = new Request.Builder()//전송
                     .url(url)
                     .post(formBody)
                     .build();
@@ -52,26 +52,31 @@ public class Connect {//connect to server class
             client.newCall(request).enqueue(new Callback() {
                 //비동기 처리를 위해 Callback 구현
                 @Override
-                public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    System.out.println("error + Connect Server Error is " + e.toString());
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {//실패시
+                    Log.d("postData",e.toString()+ "?!");
                 }
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    if(response.isSuccessful())
+                    if(response.isSuccessful())//성공시
                     {
-                        if(response.body() != null) {
-                            final String res = response.body().string();
-                            Log.d("resGetting",res+ "YES!");
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    i++;
-                                    Log.d("resGetting","..."+i);
-                                    tv_sendData.setText(res);
-                                    //handler.postDelayed(this, 1000);
-                                }
-                            });
+                        if(response.body() != null) {//get response
+                            final String res = response.body().string();//서버에서 날려준 데이터
+                            Log.d("postData",res+ "?!");
+
+                            if(handler != null) {//update UI
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        i++;
+                                        Log.d("postData", "..." + i);
+                                        tv_sendData.setText(res);//그 데이터로 텍스트 뷰 업데이트
+                                        //handler.postDelayed(this, 1000);
+                                    }
+                                });
+                            }else{
+                                //do not have to update UI
+                            }
                         }
                     }
 
@@ -83,6 +88,7 @@ public class Connect {//connect to server class
             System.err.println(e.toString());
         }
     }
+
 
 
 }
