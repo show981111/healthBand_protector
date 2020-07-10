@@ -2,6 +2,7 @@ package com.hanium.healthband;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -9,6 +10,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Handler;
@@ -31,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         tv_hanium = findViewById(R.id.tv_receivedData);
         bt_connect = findViewById(R.id.bt_connect);
         bt_disConnect = findViewById(R.id.bt_cancel);
+        Button bt_goToLogin = findViewById(R.id.bt_goToLogin);
         tv_hanium.setText("hanium Project");
 
         final Timer t = new Timer();
@@ -45,15 +50,19 @@ public class MainActivity extends AppCompatActivity {
 
 
                 //여기서 1초간격으로 데이터를 서버로 보냄
-                TimerTask myTimerTask = new TimerTask() {
-                    @Override
-                    public void run() {
-                        Connect connect = new Connect(MainActivity.this, tv_hanium);
-                        connect.postData(data,"http://show981111.cafe24.com/testUpdata.php");
-                        data++;
-                    }
-                };
-                t.scheduleAtFixedRate(myTimerTask, 0, 1000);//1초 간격 세팅
+                //http 통신
+//                TimerTask myTimerTask = new TimerTask() {
+//                    @Override
+//                    public void run() {
+//                        ConnectHttp connect = new ConnectHttp(MainActivity.this);
+//                        connect.postData(data,"http://show981111.cafe24.com/testUpdata.php", tv_hanium);
+//                        data++;
+//                    }
+//                };
+//                t.scheduleAtFixedRate(myTimerTask, 0, 1000);//1초 간격 세팅신
+                //tcp통신
+                ConnectTcp connectTcp = new ConnectTcp();
+
 
             }
         });
@@ -64,6 +73,16 @@ public class MainActivity extends AppCompatActivity {
                 t.cancel();
             }
         });//데이터 전송 중단
+
+
+        //login 창으로 이동
+        bt_goToLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent goToLogin = new Intent(MainActivity.this, LoginActivity.class);
+                MainActivity.this.startActivity(goToLogin);
+            }
+        });
 
 
     }

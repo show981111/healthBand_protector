@@ -39,6 +39,7 @@
             android:id="@+id/et_registerName"
             android:drawablePadding="20dp"
             android:drawableRight="@drawable/ic_login"
+            android:inputType="text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="이름"/>
@@ -49,24 +50,43 @@
             android:drawablePadding="20dp"
             android:drawableRight="@drawable/ic_email"
             android:layout_width="match_parent"
+            android:inputType="textEmailAddress"
             android:layout_height="wrap_content"
-            android:hint="selfbook@gmail.com"/>
-
-        <EditText
-            android:id="@+id/et_registerAdress"
-            android:drawablePadding="20dp"
-            android:drawableRight="@drawable/ic_home"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="selfbook@gmail.com"/>
+            android:hint="hanium@gmail.com"/>
 
         <EditText
             android:id="@+id/et_registerPhone"
             android:drawablePadding="20dp"
             android:drawableRight="@drawable/ic_phone"
+            android:inputType="phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="selfbook@gmail.com"/>
+            android:hint="010-0000-0000"/>
+
+        <RadioGroup
+            android:layout_marginTop="5dp"
+            android:id="@+id/rg_registerType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:checkedButton = "@+id/rb_typePatient">
+
+            <RadioButton
+                android:id="@+id/rb_typePatient"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="환자">
+            </RadioButton>
+
+            <RadioButton
+                android:id="@+id/rb_typeProtect"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="보호자">
+            </RadioButton>
+        </RadioGroup>
 
         <EditText
             android:id="@+id/et_registerPassword"

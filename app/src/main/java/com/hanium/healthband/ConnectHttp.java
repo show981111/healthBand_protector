@@ -3,6 +3,7 @@ package com.hanium.healthband;
 import android.content.Context;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import org.jetbrains.annotations.NotNull;
@@ -21,21 +22,19 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class Connect {//connect to server class
+public class ConnectHttp<T extends View> {//connect to server class
 
     private Context context;
     private android.os.Handler handler;// 서버와의 연결 후에 서버에서 보내주는 데이터를 토데로 UI를 업데이트 하기 위해서 핸들러 준비
-    private TextView tv_sendData ;
     private int i = 0;
-
-    public Connect(Context context, TextView tv_sendData) {
+    private T view;
+    public ConnectHttp(Context context) {
         this.handler = new android.os.Handler(Looper.getMainLooper());//핸들러 초기화
-        this.tv_sendData = tv_sendData;
         this.context = context;
     }
 
-    void postData(int data ,String url){//send Data
-
+    void postData(int data ,String url, T t){//send Data
+        view = t;
         try {
             OkHttpClient client = new OkHttpClient();//http 연결 라이브러리로 okhttp 라이브러리 사용
 
@@ -70,7 +69,11 @@ public class Connect {//connect to server class
                                     public void run() {
                                         i++;
                                         Log.d("postData", "..." + i);
-                                        tv_sendData.setText(res);//그 데이터로 텍스트 뷰 업데이트
+                                        if(view instanceof TextView)
+                                        {
+                                            TextView tv = (TextView) view;
+                                            tv.setText(res);//그 데이터로 텍스트 뷰 업데이트
+                                        }
                                         //handler.postDelayed(this, 1000);
                                     }
                                 });
