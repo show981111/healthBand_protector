@@ -2,6 +2,8 @@ package com.hanium.healthband;
 
 import android.util.Log;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -9,13 +11,16 @@ import java.net.UnknownHostException;
 public class ConnectTcp {
 
     private String TAG = "tcp";
+    private DataOutputStream dos;
+    private DataInputStream dis;
+    private Socket socket;
 
     public ConnectTcp() {
-        Thread socket = new Thread() {
+        Thread socketThread = new Thread() {
             public void run(){
                 try { //클라이언트 소켓 생성
 
-                    Socket socket = new Socket("13.125.206.125", 8888);
+                    socket = new Socket("13.125.206.125", 5656);
                     Log.e(TAG, "success");
                 }  catch (UnknownHostException uhe) {
                     // 소켓 생성 시 전달되는 호스트(www.unknown-host.com)의 IP를 식별할 수 없음.
@@ -30,9 +35,50 @@ public class ConnectTcp {
                     // 소켓 생성 시 전달되는 포트 번호(65536)이 허용 범위(0~65535)를 벗어남.
                     Log.e(TAG," 생성 Error : 메서드에 잘못된 파라미터가 전달되는 경우 발생. (0~65535 범위 밖의 포트 번호 사용, null 프록시(proxy) 전달)");
                 }
-            }
-        };
 
-        socket.start();
-    }
-}
+                try {
+                    dos = new DataOutputStream(socket.getOutputStream());   // output에 보낼꺼 넣음
+                    dis = new DataInputStream(socket.getInputStream());     // input에 받을꺼 넣어짐
+                    dos.writeUTF("안드로이드에서 서버로 연결요청");
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.w("버퍼", "버퍼생성 잘못됨");
+                }
+                Log.w("버퍼","버퍼생성 잘됨");
+
+                while(true) {
+                    // 서버에서 받아옴
+                    try {
+                        String line = "";
+                        int line2;
+                        while (true) {
+                            line2 = 1;
+                            line = (String) dis.readUTF();
+                            //line2 = (int) dis.read();
+                            //Log.w("서버에서 받아온 값 ", "" + line);
+                            //Log.w("서버에서 받아온 값 ", "" + line2);
+
+                            if(line2 > 0) {
+                                Log.w("------서버에서 받아온 값 ", "" + line);
+                                dos.writeUTF("하나 받았습니다. : " + line);
+                                dos.flush();
+                            }
+                            if(line2 == 99) {
+                                Log.w("------서버에서 받아온 값 ", "" + line);
+                                socket.close();
+                                break;
+                            }
+                        }
+                    } catch (Exception e) {
+
+                    }
+                }
+
+
+            }//run
+        };//Thread
+
+        socketThread.start();
+    }//connectTcp
+}//class
