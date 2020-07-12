@@ -37,8 +37,10 @@ public class MainActivity extends AppCompatActivity {
         bt_disConnect = findViewById(R.id.bt_cancel);
         Button bt_goToLogin = findViewById(R.id.bt_goToLogin);
         tv_hanium.setText("hanium Project");
+        final Button bt_send = findViewById(R.id.bt_send);
 
         final Timer t = new Timer();
+        final ConnectTcp connectTcp = new ConnectTcp();
 
         bt_connect.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,8 +63,7 @@ public class MainActivity extends AppCompatActivity {
 //                };
 //                t.scheduleAtFixedRate(myTimerTask, 0, 1000);//1초 간격 세팅신
                 //tcp통신
-                ConnectTcp connectTcp = new ConnectTcp();
-
+                connectTcp.sendMessage("userA");
 
             }
         });
@@ -70,17 +71,31 @@ public class MainActivity extends AppCompatActivity {
         bt_disConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                t.cancel();
+                try {
+                    connectTcp.closeSocket();
+                } catch (IOException e) {
+                    Log.d("tcp", "fail to close ");
+                    e.printStackTrace();
+                }
             }
         });//데이터 전송 중단
+        bt_send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    connectTcp.sendAdditionalMessage("send data from bt_send");
+                    //connectTcp.sendDataEverySecond();
 
+            }
+        });
 
         //login 창으로 이동
         bt_goToLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent goToLogin = new Intent(MainActivity.this, LoginActivity.class);
-                MainActivity.this.startActivity(goToLogin);
+                connectTcp.sendAdditionalMessage("send data from bt_goToLogin");
+                //connectTcp.sendAdditionalMessage("james : 150");
+//                Intent goToLogin = new Intent(MainActivity.this, LoginActivity.class);
+//                MainActivity.this.startActivity(goToLogin);
             }
         });
 
