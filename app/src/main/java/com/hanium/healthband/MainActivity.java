@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 //                };
 //                t.scheduleAtFixedRate(myTimerTask, 0, 1000);//1초 간격 세팅신
                 //tcp통신
-                connectTcp.sendMessage("userA");
+                connectTcp.sendMessage("receivers");
 
             }
         });

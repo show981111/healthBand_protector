@@ -42,7 +42,7 @@ public class ConnectTcp {
                         // ...
                         try { //클라이언트 소켓 생성
 
-                            socket = new Socket("13.125.206.125", 5656);
+                            socket = new Socket("13.125.245.251", 5656);
                             Log.e(TAG, "success");
                             isSuccess = 1;
 
@@ -62,7 +62,7 @@ public class ConnectTcp {
                         }
                         if(isSuccess == 0) return;
                         try {
-                            String sending = "CONNECT TO SERVER:" + message;
+                            String sending = message;
                             byte[] byteArr = sending.getBytes("UTF-8");
                             out = socket.getOutputStream();
                             out.write(byteArr);
