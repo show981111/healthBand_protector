@@ -92,10 +92,10 @@ public class MainActivity extends AppCompatActivity {
         bt_goToLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                connectTcp.sendAdditionalMessage("send data from bt_goToLogin");
+                //connectTcp.sendAdditionalMessage("send data from bt_goToLogin");
                 //connectTcp.sendAdditionalMessage("james : 150");
-//                Intent goToLogin = new Intent(MainActivity.this, LoginActivity.class);
-//                MainActivity.this.startActivity(goToLogin);
+                Intent goToLogin = new Intent(MainActivity.this, LoginActivity.class);
+                MainActivity.this.startActivity(goToLogin);
             }
         });
 

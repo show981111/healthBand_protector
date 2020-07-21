@@ -50,6 +50,7 @@ while True:
 
 			print(user['data'].decode('utf-8') + " is connected ")
 			userType = user['data'].decode('utf-8')#유저가 receiver(보호자) 인지 아니면 sender(환자)인지 
+			
 			print(userType)
 
 			if userType == 'receiver':
