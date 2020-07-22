@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.hanium.healthband"
-        minSdkVersion 16
+        minSdkVersion 18
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -34,4 +34,7 @@ dependencies {
 
     implementation 'com.squareup.okhttp3:okhttp:4.4.0'
     implementation 'com.google.code.gson:gson:2.8.6'
+
+    implementation 'com.vise.xiaoyaoyou:baseble:2.0.5'
+
 }
