@@ -19,6 +19,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.ParcelUuid;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -110,13 +111,13 @@ public class MainActivity extends AppCompatActivity {
         bt_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    connectTcp.sendAdditionalMessage("send data from bt_send");
-                    connectTcp.sendDataEverySecond();
+//                    connectTcp.sendAdditionalMessage("send data from bt_send");
+//                    connectTcp.sendDataEverySecond();
                 Log.d("SCAN_BLE", "start");
-//                DeviceScanActivity.class.getLayoutInflater();
                 Log.d("BLUE", "Start");
-//                Intent startConnect = new Intent(MainActivity.this, DeviceScanActivity.class);
-//                MainActivity.this.startActivity(startConnect);
+                Intent startConnect = new Intent(MainActivity.this, DeviceScanActivity.class);
+                //DeviceScanActivity.class.getLayoutInflater();
+                MainActivity.this.startActivity(startConnect);
             }
         });
 

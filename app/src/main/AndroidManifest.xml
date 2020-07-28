@@ -25,7 +25,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".DeviceScanActivity"></activity>
+        <activity android:name=".DeviceControlActivity"></activity>
+        <activity android:name=".DeviceScanActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".MainActivity">
@@ -35,6 +36,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name="BluetoothLeService"></service>
+
+
 
         <uses-library
             android:name="org.apache.http.legacy"
