@@ -130,7 +130,7 @@ public class ConnectTcp {
 
     }
 
-    void sendDataEverySecond(){
+    void sendDataEverySecond(String data){
         timer = new Timer();
         timer.schedule(new TimerTask()
         {

@@ -122,8 +122,6 @@ public class DeviceScanActivity extends ListActivity {
         final BluetoothDevice device = mLeDeviceListAdapter.getDevice(position);
         if (device == null) return;
         final Intent intent = new Intent(this, DeviceControlActivity.class);
-        Log.d("device", device.getName() );
-        Log.d("device", device.getAddress() );
         intent.putExtra("DEVICE_NAME", device.getName().toString());
         intent.putExtra("DEVICE_ADDRESS", device.getAddress().toString());
         //Log.d("")
@@ -212,6 +210,17 @@ public class DeviceScanActivity extends ListActivity {
             new BluetoothAdapter.LeScanCallback() {
                 @Override
                 public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
+                    if(device.getAddress().equals("OURADDRESS")){
+                        final Intent intent = new Intent(DeviceScanActivity.this, DeviceControlActivity.class);
+                        intent.putExtra("DEVICE_NAME", device.getName().toString());
+                        intent.putExtra("DEVICE_ADDRESS", device.getAddress().toString());
+                        //Log.d("")
+                        if (mScanning) {
+                            mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                            mScanning = false;
+                        }
+                        startActivity(intent);
+                    }
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

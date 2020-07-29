@@ -1,48 +1,19 @@
 package com.hanium.healthband;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
-import android.Manifest;
+import androidx.appcompat.app.AppCompatActivity;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
-import android.bluetooth.le.ScanResult;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.ParcelUuid;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.vise.baseble.ViseBle;
-import com.vise.baseble.callback.scan.IScanCallback;
-import com.vise.baseble.callback.scan.ScanCallback;
-import com.vise.baseble.core.BluetoothGattChannel;
-import com.vise.baseble.model.BluetoothLeDevice;
-import com.vise.baseble.model.BluetoothLeDeviceStore;
-
 import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.UUID;
 
-import okhttp3.FormBody;
-import okhttp3.RequestBody;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -56,15 +27,7 @@ public class MainActivity extends AppCompatActivity {
     Button bt_disConnect;
     TextView tv_hanium;
     int data = 10;
-
-
-    public static final String TAG = "BLE1_ACTIVITY";
-
-
-    // Initializes Bluetooth adapter.
-//    final BluetoothManager bluetoothManager =
-//            (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-//
+    Timer timer;
     private BluetoothAdapter bluetoothAdapter;
 
 
@@ -91,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 getData = "";
-                connectTcp.sendMessage("receivers");
+                //connectTcp.sendMessage("receivers");
 
             }
         });
@@ -144,5 +107,4 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
 }

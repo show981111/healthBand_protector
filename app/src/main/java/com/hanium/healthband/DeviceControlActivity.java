@@ -37,6 +37,8 @@ public class DeviceControlActivity extends AppCompatActivity {
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
     private TextView mConnectionState;
     private TextView mDataField;
+    private TextView tv_temperature;
+    private TextView tv_humidity;
     private String mDeviceName;
     private String mDeviceAddress;
     private ExpandableListView mGattServicesList;
@@ -93,6 +95,7 @@ public class DeviceControlActivity extends AppCompatActivity {
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 //String data_value = intent.getIntExtra(BluetoothLeService.EXTRA_DATA, -1);
                 displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
+
             }
         }
     };
@@ -151,13 +154,15 @@ public class DeviceControlActivity extends AppCompatActivity {
         mGattServicesList.setOnChildClickListener(servicesListClickListner);
         mConnectionState = (TextView) findViewById(R.id.connection_state);
         mDataField = (TextView) findViewById(R.id.data_value);
+        tv_temperature = findViewById(R.id.tv_temperature);
+        tv_humidity = findViewById(R.id.tv_humidity);
+
         getSupportActionBar().setTitle(mDeviceName);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //        getActionBar().setTitle(mDeviceName);
 //        getActionBar().setDisplayHomeAsUpEnabled(true);
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-        Log.d(TAG, "bindService");
     }
     @Override
     protected void onResume() {
@@ -219,6 +224,8 @@ public class DeviceControlActivity extends AppCompatActivity {
             mDataField.setText(data);
         }
     }
+
+
     // Demonstrates how to iterate through the supported GATT Services/Characteristics.
     // In this sample, we populate the data structure that is bound to the ExpandableListView
     // on the UI.
@@ -232,26 +239,26 @@ public class DeviceControlActivity extends AppCompatActivity {
                 = new ArrayList<ArrayList<HashMap<String, String>>>();
         mGattCharacteristics = new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
         // Loops through available GATT Services.
-        for (BluetoothGattService gattService : gattServices) {
+        for (BluetoothGattService gattService : gattServices) {//발견된 서비스들을 순회하면서 하나의 서비스에 대해서 연산 수
             HashMap<String, String> currentServiceData = new HashMap<String, String>();
-            uuid = gattService.getUuid().toString();
+            uuid = gattService.getUuid().toString();//발견된 서비스의 uuid
             currentServiceData.put(
-                    LIST_NAME, SampleGattAttributes.lookup(uuid, unknownServiceString));
+                    LIST_NAME, SampleGattAttributes.lookup(uuid, unknownServiceString));//현재 발견된 서비스의 uuid가 샘플에 있는 uuid면 이름을 지정해줌
             currentServiceData.put(LIST_UUID, uuid);
-            gattServiceData.add(currentServiceData);
+            gattServiceData.add(currentServiceData);//발견된 서비스들을 더하는 곳
             ArrayList<HashMap<String, String>> gattCharacteristicGroupData =
                     new ArrayList<HashMap<String, String>>();
             List<BluetoothGattCharacteristic> gattCharacteristics =
-                    gattService.getCharacteristics();
+                    gattService.getCharacteristics();//해당 서비스의 charateristic들을 구함
             ArrayList<BluetoothGattCharacteristic> charas =
                     new ArrayList<BluetoothGattCharacteristic>();
             // Loops through available Characteristics.
-            for (BluetoothGattCharacteristic gattCharacteristic : gattCharacteristics) {
+            for (BluetoothGattCharacteristic gattCharacteristic : gattCharacteristics) {//한 서비스에 대한 characteristic을 돌면서
                 charas.add(gattCharacteristic);
                 HashMap<String, String> currentCharaData = new HashMap<String, String>();
                 uuid = gattCharacteristic.getUuid().toString();
                 currentCharaData.put(
-                        LIST_NAME, SampleGattAttributes.lookup(uuid, unknownCharaString));
+                        LIST_NAME, SampleGattAttributes.lookup(uuid, unknownCharaString));//알고있는 characteristic이라면 이름을 정해줌
                 currentCharaData.put(LIST_UUID, uuid);
                 gattCharacteristicGroupData.add(currentCharaData);
             }
