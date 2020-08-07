@@ -2,8 +2,13 @@ package com.hanium.healthband;
 
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -88,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
         bt_goToLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                connectTcp.sendAdditionalMessage("send data from bt_goToLogin");
-                connectTcp.sendAdditionalMessage("james : 150");
+//                connectTcp.sendAdditionalMessage("send data from bt_goToLogin");
+//                connectTcp.sendAdditionalMessage("james : 150");
 //                Intent goToLogin = new Intent(MainActivity.this, LoginActivity.class);
 //                MainActivity.this.startActivity(goToLogin);
                 Log.d("SCAN_BLE", "start");
@@ -99,6 +104,15 @@ public class MainActivity extends AppCompatActivity {
 
 
         //blueTooth**************************************************************
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            Log.i("info", "No fine location permissions");
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    1);
+        }
 
         if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);

@@ -1,4 +1,3 @@
-
 package com.hanium.healthband;
 import android.app.Activity;
 import android.app.ListActivity;
@@ -37,7 +36,7 @@ public class DeviceScanActivity extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.d("DEVICE", "START");
+        Log.w("DEVICE", "START");
 
         mHandler = new Handler();
         // Use this check to determine whether BLE is supported on the device.  Then you can
@@ -58,7 +57,7 @@ public class DeviceScanActivity extends ListActivity {
             return;
         }
     }
-//    @Override
+    //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
 //        getMenuInflater().inflate(R.menu.main, menu);
 //        if (!mScanning) {
@@ -104,6 +103,7 @@ public class DeviceScanActivity extends ListActivity {
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.w("DEVICE", "result");
         // User chose not to enable Bluetooth.
         if (requestCode == REQUEST_ENABLE_BT && resultCode == Activity.RESULT_CANCELED) {
             finish();
@@ -134,6 +134,7 @@ public class DeviceScanActivity extends ListActivity {
     private void scanLeDevice(final boolean enable) {
         if (enable) {
             // Stops scanning after a pre-defined scan period.
+            Log.w("scan", "START");
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -210,6 +211,7 @@ public class DeviceScanActivity extends ListActivity {
             new BluetoothAdapter.LeScanCallback() {
                 @Override
                 public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
+                    Log.w("SCAN", "Scanning start ");
                     if(device.getAddress().equals("OURADDRESS")){
                         final Intent intent = new Intent(DeviceScanActivity.this, DeviceControlActivity.class);
                         intent.putExtra("DEVICE_NAME", device.getName().toString());

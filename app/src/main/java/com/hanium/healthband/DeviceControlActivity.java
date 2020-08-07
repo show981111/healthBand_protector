@@ -45,6 +45,9 @@ public class DeviceControlActivity extends AppCompatActivity {
     private BluetoothLeService mBluetoothLeService = new BluetoothLeService();
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
             new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
+
+    private ArrayList<BluetoothGattCharacteristic> knownChars =
+            new ArrayList<BluetoothGattCharacteristic>();
     private boolean mConnected = false;
     private BluetoothGattCharacteristic mNotifyCharacteristic;
     private final String LIST_NAME = "NAME";
@@ -94,6 +97,7 @@ public class DeviceControlActivity extends AppCompatActivity {
                 displayGattServices(mBluetoothLeService.getSupportedGattServices());
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 //String data_value = intent.getIntExtra(BluetoothLeService.EXTRA_DATA, -1);
+                Log.w("loop", "value" + intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
                 displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
 
             }
@@ -109,23 +113,34 @@ public class DeviceControlActivity extends AppCompatActivity {
                 public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
                                             int childPosition, long id) {
                     if (mGattCharacteristics != null) {
-                        final BluetoothGattCharacteristic characteristic =
-                                mGattCharacteristics.get(groupPosition).get(childPosition);
-                        final int charaProp = characteristic.getProperties();
-                        if ((charaProp | BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
-                            // If there is an active notification on a characteristic, clear
-                            // it first so it doesn't update the data field on the user interface.
-                            if (mNotifyCharacteristic != null) {
-                                mBluetoothLeService.setCharacteristicNotification(
-                                        mNotifyCharacteristic, false);
-                                mNotifyCharacteristic = null;
+                        Log.w("mGattChars", String.valueOf(mGattCharacteristics.size()));
+                        for(int i = 0; i< mGattCharacteristics.size(); i++) {
+
+
+//                            final BluetoothGattCharacteristic characteristic =
+//                                    mGattCharacteristics.get(groupPosition).get(childPosition);
+                            final BluetoothGattCharacteristic characteristic =
+                                    mGattCharacteristics.get(groupPosition).get(i);
+                            Log.w("mGattChars", characteristic.toString() + "dsad " + i);
+                            final int charaProp = characteristic.getProperties();
+                            if ((charaProp | BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
+                                // If there is an active notification on a characteristic, clear
+                                // it first so it doesn't update the data field on the user interface.
+                                if (mNotifyCharacteristic != null) {
+                                    mBluetoothLeService.setCharacteristicNotification(
+                                            mNotifyCharacteristic, false);
+                                    mNotifyCharacteristic = null;
+                                }
+
+                                mBluetoothLeService.readCharacteristic(characteristic);
+
                             }
-                            mBluetoothLeService.readCharacteristic(characteristic);
-                        }
-                        if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
-                            mNotifyCharacteristic = characteristic;
-                            mBluetoothLeService.setCharacteristicNotification(
-                                    characteristic, true);
+                            if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
+                                mNotifyCharacteristic = characteristic;
+                                mBluetoothLeService.setCharacteristicNotification(
+                                        characteristic, true);
+                            }
+
                         }
                         return true;
                     }
@@ -222,6 +237,7 @@ public class DeviceControlActivity extends AppCompatActivity {
     private void displayData(String data) {
         if (data != null) {
             mDataField.setText(data);
+            tv_temperature.setText(data);
         }
     }
 
@@ -246,6 +262,7 @@ public class DeviceControlActivity extends AppCompatActivity {
                     LIST_NAME, SampleGattAttributes.lookup(uuid, unknownServiceString));//현재 발견된 서비스의 uuid가 샘플에 있는 uuid면 이름을 지정해줌
             currentServiceData.put(LIST_UUID, uuid);
             gattServiceData.add(currentServiceData);//발견된 서비스들을 더하는 곳
+
             ArrayList<HashMap<String, String>> gattCharacteristicGroupData =
                     new ArrayList<HashMap<String, String>>();
             List<BluetoothGattCharacteristic> gattCharacteristics =
@@ -260,11 +277,57 @@ public class DeviceControlActivity extends AppCompatActivity {
                 currentCharaData.put(
                         LIST_NAME, SampleGattAttributes.lookup(uuid, unknownCharaString));//알고있는 characteristic이라면 이름을 정해줌
                 currentCharaData.put(LIST_UUID, uuid);
+                if (!SampleGattAttributes.lookup(uuid, unknownCharaString).equals(unknownCharaString)) {
+                    knownChars.add(gattCharacteristic);
+                }
                 gattCharacteristicGroupData.add(currentCharaData);
+                Log.w("chars", gattCharacteristic.toString());
+                if (SampleGattAttributes.lookup(uuid, unknownCharaString).equals("Temperature Measurement")) {
+                    //tv_temperature.setText();
+                } else if (SampleGattAttributes.lookup(uuid, unknownCharaString).equals("Humidity Measurement")) {
+
+                }
             }
             mGattCharacteristics.add(charas);
             gattCharacteristicData.add(gattCharacteristicGroupData);
+
+            }
+        Log.w("loop", String.valueOf(knownChars.size()));
+        //for (int j = 0; j < 2; j++){
+        for (int i = 0; i < knownChars.size(); i++) {
+
+
+//                            final BluetoothGattCharacteristic characteristic =
+//                                    mGattCharacteristics.get(groupPosition).get(childPosition);
+            final BluetoothGattCharacteristic characteristic =
+                    knownChars.get(i);
+            final int charaProp = characteristic.getProperties();
+            //if ((charaProp | BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
+                // If there is an active notification on a characteristic, clear
+                // it first so it doesn't update the data field on the user interface.
+//                        if (mNotifyCharacteristic != null) {
+//                            mBluetoothLeService.setCharacteristicNotification(
+//                                    mNotifyCharacteristic, false);
+//                            mNotifyCharacteristic = null;
+//                        }
+
+                mBluetoothLeService.readCharacteristic(characteristic);
+
+                mNotifyCharacteristic = characteristic;
+                Log.w("loop", mNotifyCharacteristic.getUuid().toString() + "dsad " + i);
+                mBluetoothLeService.setCharacteristicNotification(
+                        characteristic, true);
+
+            //}
+//                if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
+//                    mNotifyCharacteristic = characteristic;
+//
+//                    mBluetoothLeService.setCharacteristicNotification(
+//                            characteristic, true);
+//                }
+
         }
+        //}
         SimpleExpandableListAdapter gattServiceAdapter = new SimpleExpandableListAdapter(
                 this,
                 gattServiceData,

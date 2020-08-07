@@ -14,8 +14,8 @@ public class SampleGattAttributes {
         attributes.put("0000181a-0000-1000-8000-00805f9b34fb", "Environment Service");
         attributes.put("0000180a-0000-1000-8000-00805f9b34fb", "Device Information Service");
         // Sample Characteristics.
-        attributes.put(TEMPERATURE_MEASUREMENT, "Heart Rate Measurement");
-        attributes.put("00002a6f-0000-1000-8000-00805f9b34fb", "Temperature Measurement");
+        attributes.put(TEMPERATURE_MEASUREMENT, "Temperature Measurement");
+        attributes.put(HUMIDITY_MEASUREMENT, "Humidity Measurement");
     }
     public static String lookup(String uuid, String defaultName) {
         String name = attributes.get(uuid);

@@ -65,6 +65,9 @@ public class BluetoothLeService extends Service {
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
+
+        List<BluetoothGattCharacteristic> chars = new ArrayList<>();
+
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             String intentAction;
@@ -87,21 +90,56 @@ public class BluetoothLeService extends Service {
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
+
+
             } else {
                 Log.w(TAG, "onServicesDiscovered received: " + status);
             }
+
+//            List<BluetoothGattService> services = gatt.getServices();
+//            BluetoothGattService rightService = null;
+
+//            for (int i = 0; i < services.size(); i++) {
+//                if (services.get(i).getCharacteristics().size() > 8) {
+//                    rightService = services.get(i);
+//                }
+//            }
+//
+//            //for(int i = 0; i < rightService.getCharacteristics()
+//
+//            chars.add(rightService.getCharacteristics().get(4));
+//            chars.add(rightService.getCharacteristics().get(6));
+//
+//            requestCharacteristics(gatt);
+        }
+
+        public void requestCharacteristics(BluetoothGatt gatt) {
+            gatt.readCharacteristic(chars.get(chars.size()-1));
         }
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt,
                                          BluetoothGattCharacteristic characteristic,
                                          int status) {
+            Log.w("loop", "read Called");
             if (status == BluetoothGatt.GATT_SUCCESS) {
+                if(!SampleGattAttributes.lookup(characteristic.getUuid().toString(), "").equals("")){
+                    chars.add(characteristic);
+                    Log.w("loop", SampleGattAttributes.lookup(characteristic.getUuid().toString(), "") + " added ");
+                }
                 broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
+                //chars.remove(chars.get(chars.size() - 1));
+
+//                if (chars.size() > 0) {
+//                    broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
+//                } else {
+//                    gatt.disconnect();
+//                }
             }
         }
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt,
                                             BluetoothGattCharacteristic characteristic) {
+            Log.w("loop", "changed Called");
             broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
 
 //            if (UUID_TEMPERATURE_MEASUREMENT.equals(characteristic.getUuid())) {
@@ -123,6 +161,7 @@ public class BluetoothLeService extends Service {
     }
     private void broadcastUpdate(final String action,
                                  final BluetoothGattCharacteristic characteristic) {
+        Log.w("loop", "updatae Called");
         final Intent intent = new Intent(action);
         // This is special handling for the Heart Rate Measurement profile.  Data parsing is
         // carried out as per profile specifications:
@@ -280,6 +319,7 @@ public class BluetoothLeService extends Service {
      */
     public void setCharacteristicNotification(BluetoothGattCharacteristic characteristic,
                                               boolean enabled) {
+        Log.w("loop", characteristic.getUuid().toString() + " notifiied ");
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
             Log.w(TAG, "BluetoothAdapter not initialized");
             return;
