@@ -74,8 +74,6 @@ public class LoginActivity extends AppCompatActivity {
             }
             OkHttpClient okHttpClient = new OkHttpClient();
 
-            Log.d("LoginTask", userID);
-            Log.d("LoginTask", userPW);
             RequestBody formBody = new FormBody.Builder()
                     .add("username", userID)
                     .add("email", "")

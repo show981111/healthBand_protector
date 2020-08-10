@@ -51,15 +51,17 @@ public class BluetoothLeService extends Service {
 //            "com.hanium.bluetooth.le.TEMPERATURE_DATA_AVAILABLE";
 //    public final static String HUMIDITY_DATA_AVAILABLE =
 //            "com.hanium.bluetooth.le.HUMIDITY_DATA_AVAILABLE";
-//    public final static String TEMPERATURE_DATA =
-//            "com.hanium.bluetooth.le.TEMPERATURE_DATA";//com.example.bluetooth.le.EXTRA_DATA
-//    public final static String HUMIDITY_DATA =
-//            "com.hanium.bluetooth.le.HUMIDITY_DATA";//com.example.bluetooth.le.EXTRA_DATA
+    public final static String TEMPERATURE_DATA =
+            "com.hanium.bluetooth.le.TEMPERATURE_DATA";//com.example.bluetooth.le.EXTRA_DATA
+    public final static String HUMIDITY_DATA =
+            "com.hanium.bluetooth.le.HUMIDITY_DATA";//com.example.bluetooth.le.EXTRA_DATA
 
     public final static UUID UUID_TEMPERATURE_MEASUREMENT =
             UUID.fromString(SampleGattAttributes.TEMPERATURE_MEASUREMENT);
     public final static UUID UUID_HUMIDITY_MEASUREMENT =
             UUID.fromString(SampleGattAttributes.HUMIDITY_MEASUREMENT);
+    public final static UUID UUID_EXTRA_MEASUREMENT =
+            UUID.fromString(SampleGattAttributes.EXTRA_CHAR);
 
     public List<BluetoothGattCharacteristic> chars = new ArrayList<>();
     // Implements callback methods for GATT events that the app cares about.  For example,
@@ -67,6 +69,7 @@ public class BluetoothLeService extends Service {
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
 
         List<BluetoothGattCharacteristic> chars = new ArrayList<>();
+        int index = 0;
 
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
@@ -95,45 +98,32 @@ public class BluetoothLeService extends Service {
             } else {
                 Log.w(TAG, "onServicesDiscovered received: " + status);
             }
-
-//            List<BluetoothGattService> services = gatt.getServices();
-//            BluetoothGattService rightService = null;
-
-//            for (int i = 0; i < services.size(); i++) {
-//                if (services.get(i).getCharacteristics().size() > 8) {
-//                    rightService = services.get(i);
-//                }
-//            }
-//
-//            //for(int i = 0; i < rightService.getCharacteristics()
-//
-//            chars.add(rightService.getCharacteristics().get(4));
-//            chars.add(rightService.getCharacteristics().get(6));
-//
-//            requestCharacteristics(gatt);
         }
 
-        public void requestCharacteristics(BluetoothGatt gatt) {
-            gatt.readCharacteristic(chars.get(chars.size()-1));
-        }
+//        public void requestCharacteristics(BluetoothGatt gatt) {
+//            gatt.readCharacteristic(chars.get(chars.size()-1));
+//        }
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt,
                                          BluetoothGattCharacteristic characteristic,
                                          int status) {
             Log.w("loop", "read Called");
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-                if(!SampleGattAttributes.lookup(characteristic.getUuid().toString(), "").equals("")){
-                    chars.add(characteristic);
-                    Log.w("loop", SampleGattAttributes.lookup(characteristic.getUuid().toString(), "") + " added ");
-                }
-                broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
-                //chars.remove(chars.get(chars.size() - 1));
+            for(int i = 0; i < gatt.getServices().size(); i++){
+                for(int j = 0; j < gatt.getServices().get(i).getCharacteristics().size(); j++){
 
-//                if (chars.size() > 0) {
-//                    broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
-//                } else {
-//                    gatt.disconnect();
-//                }
+                    if(!SampleGattAttributes.lookup(gatt.getServices().get(i).getCharacteristics().get(j).getUuid().toString(),
+                            "").equals("")){
+                        chars.add(gatt.getServices().get(i).getCharacteristics().get(j));
+                        Log.w("loop", SampleGattAttributes.lookup(gatt.getServices().get(i).getCharacteristics().get(j).getUuid().toString()
+                                , "") + " added to chars");
+                    }
+                }
+            }
+            Log.w("extra", SampleGattAttributes.lookup(characteristic.getUuid().toString(), " default") + " reading ");
+            setCharacteristicNotification(characteristic, true);
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                Log.w("extra", SampleGattAttributes.lookup(characteristic.getUuid().toString(), " default") + " success ");
+                broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
             }
         }
         @Override
@@ -142,17 +132,21 @@ public class BluetoothLeService extends Service {
             Log.w("loop", "changed Called");
             broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
 
-//            if (UUID_TEMPERATURE_MEASUREMENT.equals(characteristic.getUuid())) {
-//                broadcastUpdate(TEMPERATURE_DATA_AVAILABLE, characteristic);
-//            }else if(UUID_HUMIDITY_MEASUREMENT.equals(characteristic.getUuid())){
-//                broadcastUpdate(HUMIDITY_DATA_AVAILABLE, characteristic);
-//            }
-
         }
 
         @Override
         public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
             super.onDescriptorWrite(gatt, descriptor, status);
+            //index = index % 2;
+            for(int i = 0; i < chars.size(); i++){
+                Log.w("loop", "In chars " + chars.get(i).getUuid() + " " +chars.size() );
+            }
+            if(index < chars.size() ) {
+                Log.w("loop", SampleGattAttributes.lookup(chars.get(index).getUuid().toString(), " default ") + "on descrip");
+                setCharacteristicNotification(chars.get(index), true);
+            }
+            index++;
+            Log.w("loop","on descrip called");
         }
     };
     private void broadcastUpdate(final String action) {
@@ -169,13 +163,18 @@ public class BluetoothLeService extends Service {
         if (UUID_TEMPERATURE_MEASUREMENT.equals(characteristic.getUuid())  ) {
             final byte[] data = characteristic.getValue();
             int temperature = byteToInt(data, ByteOrder.LITTLE_ENDIAN);
-            intent.putExtra(EXTRA_DATA, String.valueOf(temperature));
+            intent.putExtra(TEMPERATURE_DATA, String.valueOf(temperature));
             //intent.putExtra(TEMPERATURE_DATA, String.valueOf(temperature));
         } else if (UUID_HUMIDITY_MEASUREMENT.equals(characteristic.getUuid())){
             final byte[] data = characteristic.getValue();
             int humidity = byteToInt(data, ByteOrder.LITTLE_ENDIAN);
-            intent.putExtra(EXTRA_DATA, String.valueOf(humidity));
+            intent.putExtra(HUMIDITY_DATA, String.valueOf(humidity));
             //intent.putExtra(HUMIDITY_DATA, String.valueOf(humidity));
+        }else if(UUID_EXTRA_MEASUREMENT.equals(characteristic.getUuid())){
+            final byte[] data = characteristic.getValue();
+            Log.w("extra", data.toString());
+            int humidity = byteToInt(data, ByteOrder.LITTLE_ENDIAN);
+            intent.putExtra(EXTRA_DATA, String.valueOf(humidity));
         }else {
             // For all other profiles, writes the data formatted in HEX.
             final byte[] data = characteristic.getValue();
@@ -183,7 +182,7 @@ public class BluetoothLeService extends Service {
                 final StringBuilder stringBuilder = new StringBuilder(data.length);
                 for(byte byteChar : data)
                     stringBuilder.append(String.format("%02X ", byteChar));
-                Log.d(TAG,"byte" + String.valueOf(data));
+                Log.d("byte","byte" + String.valueOf(data));
                 intent.putExtra(EXTRA_DATA, new String(data) + "\n" + stringBuilder.toString());
             }
         }
@@ -310,6 +309,8 @@ public class BluetoothLeService extends Service {
             return;
         }
         mBluetoothGatt.readCharacteristic(characteristic);
+//        mBluetoothGatt.setCharacteristicNotification(
+//                characteristic, true);
     }
     /**
      * Enables or disables notification on a give characteristic.
@@ -321,6 +322,7 @@ public class BluetoothLeService extends Service {
                                               boolean enabled) {
         Log.w("loop", characteristic.getUuid().toString() + " notifiied ");
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
+            Log.w("loop", characteristic.getUuid().toString() + " returned ");
             Log.w(TAG, "BluetoothAdapter not initialized");
             return;
         }
@@ -332,6 +334,11 @@ public class BluetoothLeService extends Service {
             descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
             mBluetoothGatt.writeDescriptor(descriptor);
         }else if(UUID_HUMIDITY_MEASUREMENT.equals(characteristic.getUuid())){
+            BluetoothGattDescriptor descriptor = characteristic.getDescriptor(
+                    UUID.fromString(SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
+            descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+            mBluetoothGatt.writeDescriptor(descriptor);
+        }else if(UUID_EXTRA_MEASUREMENT.equals(characteristic.getUuid())){
             BluetoothGattDescriptor descriptor = characteristic.getDescriptor(
                     UUID.fromString(SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
             descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);

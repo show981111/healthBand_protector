@@ -2,6 +2,7 @@ package com.hanium.healthband;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -48,6 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+
     }
 
     class RegisterTask extends AsyncTask<String, Void, String> {
@@ -81,7 +83,7 @@ public class RegisterActivity extends AppCompatActivity {
             RequestBody formBody = new FormBody.Builder()
                     .add("username", userID)
                     .add("password", userPW)
-                    .add("user_type", "A")
+                    .add("user_type", userType)
                     .add("name", userName)
                     .add("phone_number", userPhone)
                     .build();
@@ -107,6 +109,9 @@ public class RegisterActivity extends AppCompatActivity {
             super.onPostExecute(s);
             if(s != null){
                 Log.d(TAG, s);
+                Intent goToLogin = new Intent(RegisterActivity.this, LoginActivity.class);
+                //DeviceScanActivity.class.getLayoutInflater();
+                RegisterActivity.this.startActivity(goToLogin);
             }
         }
     }

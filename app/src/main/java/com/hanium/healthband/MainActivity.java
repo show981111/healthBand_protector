@@ -95,9 +95,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 //                connectTcp.sendAdditionalMessage("send data from bt_goToLogin");
 //                connectTcp.sendAdditionalMessage("james : 150");
-//                Intent goToLogin = new Intent(MainActivity.this, LoginActivity.class);
-//                MainActivity.this.startActivity(goToLogin);
-                Log.d("SCAN_BLE", "start");
+                Intent goToLogin = new Intent(MainActivity.this, LoginActivity.class);
+                MainActivity.this.startActivity(goToLogin);
 
             }
         });

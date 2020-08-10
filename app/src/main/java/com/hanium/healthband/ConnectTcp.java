@@ -67,9 +67,6 @@ public class ConnectTcp {
                             out = socket.getOutputStream();
                             out.write(byteArr);
                             out.flush();
-//                            dos = new DataOutputStream(socket.getOutputStream());   // output에 보낼꺼 넣음
-                            //dis = new DataInputStream(socket.getInputStream());     // input에 받을꺼 넣어짐
-//                            dos.writeUTF("CONNECT TO SERVER : "+ message);
                         } catch (IOException e) {
                             e.printStackTrace();
                             Log.w("버퍼", "버퍼생성 잘못됨");
@@ -84,8 +81,6 @@ public class ConnectTcp {
                             Log.w("------서버에서 받아온 값 ","시작");
                             while(true)
                             {
-//                                line = reader.readLine();
-//                                Log.w("------서버에서 받아온 값 ", "" + line);
                                 byte[] byteArr = new byte[100];
                                 InputStream is = socket.getInputStream();
                                 int readByteCount = is.read(byteArr);

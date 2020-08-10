@@ -211,8 +211,8 @@ public class DeviceScanActivity extends ListActivity {
             new BluetoothAdapter.LeScanCallback() {
                 @Override
                 public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
-                    Log.w("SCAN", "Scanning start ");
-                    if(device.getAddress().equals("OURADDRESS")){
+                    Log.w("SCAN", "Scanning start " + device.getAddress());
+                    if(device.getAddress().equals("F3:58:C4:91:C8:BC")){
                         final Intent intent = new Intent(DeviceScanActivity.this, DeviceControlActivity.class);
                         intent.putExtra("DEVICE_NAME", device.getName().toString());
                         intent.putExtra("DEVICE_ADDRESS", device.getAddress().toString());

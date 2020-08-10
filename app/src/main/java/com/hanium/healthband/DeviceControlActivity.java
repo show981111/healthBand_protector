@@ -97,8 +97,16 @@ public class DeviceControlActivity extends AppCompatActivity {
                 displayGattServices(mBluetoothLeService.getSupportedGattServices());
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 //String data_value = intent.getIntExtra(BluetoothLeService.EXTRA_DATA, -1);
-                Log.w("loop", "value" + intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
-                displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
+                Log.w("loop", "value temperature" + intent.getStringExtra(BluetoothLeService.TEMPERATURE_DATA));
+                Log.w("loop", "value humidity" + intent.getStringExtra(BluetoothLeService.HUMIDITY_DATA));
+                Log.w("loop", "value Extra" + intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
+                //set value in here
+                if(intent.getStringExtra(BluetoothLeService.HUMIDITY_DATA) != null ){
+                    tv_humidity.setText(intent.getStringExtra(BluetoothLeService.HUMIDITY_DATA));
+                }
+                if(intent.getStringExtra(BluetoothLeService.TEMPERATURE_DATA) != null){
+                    tv_temperature.setText(intent.getStringExtra(BluetoothLeService.TEMPERATURE_DATA));
+                }
 
             }
         }
@@ -282,51 +290,25 @@ public class DeviceControlActivity extends AppCompatActivity {
                 }
                 gattCharacteristicGroupData.add(currentCharaData);
                 Log.w("chars", gattCharacteristic.toString());
-                if (SampleGattAttributes.lookup(uuid, unknownCharaString).equals("Temperature Measurement")) {
-                    //tv_temperature.setText();
-                } else if (SampleGattAttributes.lookup(uuid, unknownCharaString).equals("Humidity Measurement")) {
 
-                }
             }
             mGattCharacteristics.add(charas);
             gattCharacteristicData.add(gattCharacteristicGroupData);
 
             }
         Log.w("loop", String.valueOf(knownChars.size()));
-        //for (int j = 0; j < 2; j++){
+
         for (int i = 0; i < knownChars.size(); i++) {
-
-
-//                            final BluetoothGattCharacteristic characteristic =
-//                                    mGattCharacteristics.get(groupPosition).get(childPosition);
             final BluetoothGattCharacteristic characteristic =
                     knownChars.get(i);
             final int charaProp = characteristic.getProperties();
-            //if ((charaProp | BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
-                // If there is an active notification on a characteristic, clear
-                // it first so it doesn't update the data field on the user interface.
-//                        if (mNotifyCharacteristic != null) {
-//                            mBluetoothLeService.setCharacteristicNotification(
-//                                    mNotifyCharacteristic, false);
-//                            mNotifyCharacteristic = null;
-//                        }
 
-                mBluetoothLeService.readCharacteristic(characteristic);
+            mBluetoothLeService.readCharacteristic(characteristic);
 
-                mNotifyCharacteristic = characteristic;
-                Log.w("loop", mNotifyCharacteristic.getUuid().toString() + "dsad " + i);
-                mBluetoothLeService.setCharacteristicNotification(
-                        characteristic, true);
-
-            //}
-//                if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
-//                    mNotifyCharacteristic = characteristic;
-//
-//                    mBluetoothLeService.setCharacteristicNotification(
-//                            characteristic, true);
-//                }
-
+            mNotifyCharacteristic = characteristic;
+            Log.w("loop", mNotifyCharacteristic.getUuid().toString() + "dsad " + i);
         }
+
         //}
         SimpleExpandableListAdapter gattServiceAdapter = new SimpleExpandableListAdapter(
                 this,

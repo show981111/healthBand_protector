@@ -3,6 +3,7 @@
     package="com.hanium.healthband">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -22,6 +23,7 @@
         android:name="android.hardware.bluetooth_le"
         android:required="true" />
 
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -30,6 +32,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
         <activity android:name=".DeviceControlActivity"></activity>
         <activity android:name=".DeviceScanActivity" />
         <activity android:name=".RegisterActivity" />
@@ -44,11 +51,6 @@
 
         <service android:name="BluetoothLeService"></service>
 
-
-
-        <uses-library
-            android:name="org.apache.http.legacy"
-            android:required="false" />
     </application>
 
 </manifest>
