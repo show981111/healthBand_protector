@@ -42,7 +42,7 @@ public class ConnectTcp {
                         // ...
                         try { //클라이언트 소켓 생성
 
-                            socket = new Socket("3.34.84.225", 5656);
+                            socket = new Socket("13.125.245.251", 5656);
                             Log.e(TAG, "success");
                             isSuccess = 1;
 
@@ -112,6 +112,7 @@ public class ConnectTcp {
             public void run() {
                 super.run();
                 try {
+                    Log.w("tcp send additional", data);
                     out = socket.getOutputStream();
                     out.write(data.getBytes());
                     out.flush();

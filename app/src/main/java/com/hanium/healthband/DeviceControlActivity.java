@@ -1,7 +1,10 @@
 package com.hanium.healthband;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import android.app.Activity;
@@ -19,12 +22,21 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
+
+import com.hanium.healthband.fetchData.fetchGuardiansList;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static com.hanium.healthband.LoginActivity.userID;
+
 /**
  * For a given BLE device, this Activity provides the user interface to connect, display data,
  * and display GATT services and characteristics supported by the device.  The Activity
@@ -55,6 +67,8 @@ public class DeviceControlActivity extends AppCompatActivity {
 
     private final String connected = "connected";
 
+    private RecyclerView guardiansRecyclerView;
+    private ImageButton ib_addGuardian;
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
@@ -186,6 +200,39 @@ public class DeviceControlActivity extends AppCompatActivity {
 //        getActionBar().setDisplayHomeAsUpEnabled(true);
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+
+
+        ib_addGuardian = findViewById(R.id.ib_addGuardian);
+        ib_addGuardian.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final EditText input = new EditText(DeviceControlActivity.this);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT);
+                input.setLayoutParams(lp);
+
+                AlertDialog dialog = new AlertDialog.Builder(DeviceControlActivity.this)
+                        .setTitle("보호자 추가")
+                        .setMessage("보호자의 아이디를 입력해주세요!")
+                        .setView(input)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                String editTextInput = input.getText().toString();
+                                Log.d("onclick","editext value is: "+ editTextInput);
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .create();
+                dialog.show();
+            }
+        });
+        //get guardian's List
+//        guardiansRecyclerView = findViewById(R.id.rv_guardian);
+//        fetchGuardiansList fetchGuardiansList = new fetchGuardiansList(DeviceControlActivity.this, userID, guardiansRecyclerView);
+//        fetchGuardiansList.execute("API");
     }
     @Override
     protected void onResume() {

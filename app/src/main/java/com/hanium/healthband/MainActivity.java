@@ -6,13 +6,17 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.io.IOException;
@@ -59,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 getData = "";
-                //connectTcp.sendMessage("receivers");
+                //connectTcp.sendMessage("sender,guar1,guar2,guar3,guar4");
 
             }
         });
@@ -79,13 +83,34 @@ public class MainActivity extends AppCompatActivity {
         bt_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                    connectTcp.sendAdditionalMessage("send data from bt_send");
-//                    connectTcp.sendDataEverySecond();
-                Log.d("SCAN_BLE", "start");
-                Log.d("BLUE", "Start");
-                Intent startConnect = new Intent(MainActivity.this, DeviceScanActivity.class);
-                //DeviceScanActivity.class.getLayoutInflater();
-                MainActivity.this.startActivity(startConnect);
+                    //connectTcp.sendAdditionalMessage("10,122,123,-123,-132,-123,312,321");
+                    //connectTcp.sendDataEverySecond();
+//                Log.d("SCAN_BLE", "start");
+//                Log.d("BLUE", "Start");
+//                Intent startConnect = new Intent(MainActivity.this, DeviceControlActivity.class);
+//                //DeviceScanActivity.class.getLayoutInflater();
+//                MainActivity.this.startActivity(startConnect);
+
+                final EditText input = new EditText(MainActivity.this);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT);
+                input.setLayoutParams(lp);
+
+                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Title")
+                        .setMessage("Message")
+                        .setView(input)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                String editTextInput = input.getText().toString();
+                                Log.d("onclick","editext value is: "+ editTextInput);
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .create();
+                dialog.show();
             }
         });
 

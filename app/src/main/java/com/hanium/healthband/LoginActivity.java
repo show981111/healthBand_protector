@@ -24,6 +24,8 @@ import okhttp3.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
+    public static final String userID = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +78,6 @@ public class LoginActivity extends AppCompatActivity {
 
             RequestBody formBody = new FormBody.Builder()
                     .add("username", userID)
-                    .add("email", "")
                     .add("password", userPW)
                     .build();
 
@@ -91,6 +92,7 @@ public class LoginActivity extends AppCompatActivity {
                 Gson gson = new Gson();
                 User user = gson.fromJson(response.body().charStream(), User.class);
 
+
                 return user;
 
             } catch (IOException e) {
@@ -104,7 +106,8 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(User user) {
             super.onPostExecute(user);
             if(user == null) return;
-            Log.d("loginTask", user.name);
+            Log.d("loginTask", user.getName());
+            userID = user.getUsername();
         }
     }
 }
