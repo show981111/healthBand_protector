@@ -1,16 +1,14 @@
-package com.hanium.healthband;
+package com.hanium.healthband_protector;
 
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,14 +16,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.hanium.healthband.model.User;
+import com.hanium.healthband_protector.model.User;
+import com.hanium.healthband_protector.recyclerView.wearerListAdapter;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Timer;
-import java.util.TimerTask;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -45,7 +42,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static ArrayList<User> linkedUserArrayList = new ArrayList<>();
     public static User user;
-
+    private RecyclerView rv_wearerList;
+    private wearerListAdapter wearerListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +68,9 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 0; i < linkedUserArrayList.size(); i++) {
                     Log.d("main", linkedUserArrayList.get(i).getName());
                 }
+                wearerListAdapter = new wearerListAdapter(MainActivity.this, linkedUserArrayList);
+                rv_wearerList.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL,false));
+                rv_wearerList.setAdapter(wearerListAdapter);
             }
         }
 
@@ -143,21 +144,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        //blueTooth**************************************************************
-//        if (ContextCompat.checkSelfPermission(this,
-//                Manifest.permission.ACCESS_FINE_LOCATION)
-//                != PackageManager.PERMISSION_GRANTED) {
-//
-//            Log.i("info", "No fine location permissions");
-//
-//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-//                    1);
-//        }
-//
-//        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
-//            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//            startActivityForResult(enableBtIntent, 1);
-//        }
+
 
 
     }

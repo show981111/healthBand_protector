@@ -1,4 +1,4 @@
-package com.hanium.healthband.fetchData;
+package com.hanium.healthband_protector.fetchData;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
-import com.hanium.healthband.model.User;
-import com.hanium.healthband.recyclerView.guardiansListAdapter;
+import com.hanium.healthband_protector.model.User;
+import com.hanium.healthband_protector.recyclerView.wearerListAdapter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class fetchGuardiansList extends AsyncTask<String, Void, User[]> {
 
     private Context mContext;
     private String userID;
-    private guardiansListAdapter guardiansListAdapter;
+    private wearerListAdapter wearerListAdapter;
     private ArrayList<User> userArrayList = new ArrayList<>();
     private RecyclerView recyclerView;
 
@@ -77,10 +77,10 @@ public class fetchGuardiansList extends AsyncTask<String, Void, User[]> {
             for(User user1 : users){
                 userArrayList.add(user1);
             }
-            guardiansListAdapter = new guardiansListAdapter(mContext,userArrayList);
+            wearerListAdapter = new wearerListAdapter(mContext,userArrayList);
 
             recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL,false));
-            recyclerView.setAdapter(guardiansListAdapter);
+            recyclerView.setAdapter(wearerListAdapter);
         }
     }
 }

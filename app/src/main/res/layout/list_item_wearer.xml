@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+    android:id="@+id/ll_wearerListItem"
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_marginLeft="15dp"
@@ -19,25 +20,25 @@
             android:textSize="20sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tv_guardianName"
+            android:id="@+id/tv_wearerName"
             />
 
         <TextView
             android:paddingLeft="10dp"
             android:layout_alignParentTop="true"
             android:textSize="20sp"
-            android:layout_toEndOf="@+id/tv_guardianName"
+            android:layout_toEndOf="@+id/tv_wearerName"
             android:text="010-1111-1111"
             android:padding="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tv_guardianPhone"/>
+            android:id="@+id/tv_wearerPhone"/>
 
         <ImageButton
-            android:id="@+id/ib_guardianPhone"
+            android:id="@+id/ib_viewWearerInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_phone"
+            android:src="@drawable/ic_arrow_right"
             android:layout_alignParentEnd="true"
             android:padding="10dp"
             android:background="@null"/>

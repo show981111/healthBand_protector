@@ -1,43 +1,55 @@
-package com.hanium.healthband.recyclerView;
+package com.hanium.healthband_protector.recyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.hanium.healthband.R;
-import com.hanium.healthband.model.User;
+import com.hanium.healthband_protector.R;
+import com.hanium.healthband_protector.model.User;
+import com.hanium.healthband_protector.wearerInfoActivity;
 
 import java.util.ArrayList;
 
-public class guardiansListAdapter extends RecyclerView.Adapter<guardiansViewHolder> {
+public class wearerListAdapter extends RecyclerView.Adapter<wearerViewHolder> {
 
     private Context mContext;
-    private ArrayList<User> guardianList = new ArrayList<>();
+    private ArrayList<User> wearerList = new ArrayList<>();
 
-    public guardiansListAdapter(Context mContext, ArrayList<User> guardianList) {
+    public wearerListAdapter(Context mContext, ArrayList<User> wearerList) {
         this.mContext = mContext;
-        this.guardianList = guardianList;
+        this.wearerList = wearerList;
     }
 
     @NonNull
     @Override
-    public guardiansViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View baseView = View.inflate(mContext, R.layout.list_item_guardian,null);
-        guardiansViewHolder guardiansViewHolder = new guardiansViewHolder(baseView);
-        return guardiansViewHolder;
+    public wearerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View baseView = View.inflate(mContext, R.layout.list_item_wearer,null);
+        wearerViewHolder wearerViewHolder = new wearerViewHolder(baseView);
+        return wearerViewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull guardiansViewHolder holder, int position) {
-        holder.guardianName.setText(guardianList.get(position).getName());
-        holder.guardianPhone.setText(guardianList.get(position).getPhone_number());
+    public void onBindViewHolder(@NonNull wearerViewHolder holder, final int position) {
+        holder.wearerName.setText(wearerList.get(position).getName());
+        holder.wearerPhone.setText(wearerList.get(position).getPhone_number());
+
+        holder.ll_wearerItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, wearerInfoActivity.class);
+                intent.putExtra("userName",wearerList.get(position).getName());
+                intent.putExtra("userID",wearerList.get(position).getUsername());
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return guardianList.size();
+        return wearerList.size();
     }
 }

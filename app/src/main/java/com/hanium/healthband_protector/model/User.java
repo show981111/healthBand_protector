@@ -1,4 +1,4 @@
-package com.hanium.healthband.model;
+package com.hanium.healthband_protector.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

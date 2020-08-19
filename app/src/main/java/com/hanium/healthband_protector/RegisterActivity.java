@@ -1,4 +1,4 @@
-package com.hanium.healthband;
+package com.hanium.healthband_protector;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,9 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
-
-import com.google.gson.Gson;
-import com.hanium.healthband.model.User;
 
 import java.io.IOException;
 

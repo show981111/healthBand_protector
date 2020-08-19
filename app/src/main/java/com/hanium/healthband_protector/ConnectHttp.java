@@ -1,4 +1,4 @@
-package com.hanium.healthband;
+package com.hanium.healthband_protector;
 
 import android.content.Context;
 import android.os.Looper;
@@ -7,12 +7,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.logging.Handler;
 
 import okhttp3.Call;
 import okhttp3.Callback;

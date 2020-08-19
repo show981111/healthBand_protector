@@ -1,4 +1,4 @@
-package com.hanium.healthband.postData;
+package com.hanium.healthband_protector.postData;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -7,11 +7,8 @@ import android.util.Log;
 
 import androidx.appcompat.app.AlertDialog;
 
-import com.google.gson.Gson;
-import com.hanium.healthband.LoginActivity;
-import com.hanium.healthband.model.User;
+import com.hanium.healthband_protector.model.User;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 

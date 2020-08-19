@@ -1,23 +1,25 @@
-package com.hanium.healthband.recyclerView;
+package com.hanium.healthband_protector.recyclerView;
 
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.hanium.healthband.R;
+import com.hanium.healthband_protector.R;
 
-public class guardiansViewHolder extends RecyclerView.ViewHolder {
+public class wearerViewHolder extends RecyclerView.ViewHolder {
 
-    public TextView guardianName;
-    public TextView guardianPhone;
+    public TextView wearerName;
+    public TextView wearerPhone;
+    public LinearLayout ll_wearerItem;
 
-    public guardiansViewHolder(@NonNull View itemView) {
+    public wearerViewHolder(@NonNull View itemView) {
         super(itemView);
 
-        guardianName = itemView.findViewById(R.id.tv_guardianName);
-        guardianPhone = itemView.findViewById(R.id.tv_guardianPhone);
-
+        wearerName = itemView.findViewById(R.id.tv_wearerName);
+        wearerPhone = itemView.findViewById(R.id.tv_wearerPhone);
+        ll_wearerItem = itemView.findViewById(R.id.ll_wearerListItem);
     }
 }

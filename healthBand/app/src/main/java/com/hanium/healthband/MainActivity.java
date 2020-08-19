@@ -1,4 +1,4 @@
-package com.hanium.healthband;
+package com.hanium.healthband_protector;
 
 import androidx.appcompat.app.AppCompatActivity;
 

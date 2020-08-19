@@ -1,4 +1,4 @@
-package com.hanium.healthband;
+package com.hanium.healthband_protector;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,11 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.hanium.healthband.model.User;
+import com.hanium.healthband_protector.model.User;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -127,7 +124,8 @@ public class LoginActivity extends AppCompatActivity {
                             String key = iter.next();
                             Log.d("loginTask", key);
                             JSONObject linkedUserData = linkedUserListObj.getJSONObject(key);
-                            String linked_username = linkedUserData.getString("username");
+                            String linked_userID = linkedUserData.getString("username");
+                            String linked_username = linkedUserData.getString("name");
                             String linked_phone_number = linkedUserData.getString("phone_number");
                             String linked_user_type;
                             if(user_type.equals("P")){
@@ -135,7 +133,7 @@ public class LoginActivity extends AppCompatActivity {
                             }else{
                                 linked_user_type = "P";
                             }
-                            User linkedUser = new User(linked_username,linked_username,linked_user_type,linked_phone_number);
+                            User linkedUser = new User(linked_userID,linked_username,linked_user_type,linked_phone_number);
                             linkedUserArrayList.add(linkedUser);
                         }
 
@@ -182,10 +180,11 @@ public class LoginActivity extends AppCompatActivity {
                     intent.putExtra("userData", user);
                     LoginActivity.this.startActivity(intent);
                 }else{
-                    Intent intent = new Intent(LoginActivity.this, DeviceScanActivity.class);
-                    intent.putParcelableArrayListExtra("LinkedUserList", linkedUserArrayList);
-                    intent.putExtra("userData", user);
-                    LoginActivity.this.startActivity(intent);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                    builder.setMessage("착용자 어플을 다운받아 주세요!")
+                            .setNegativeButton("확인", null)
+                            .create()
+                            .show();
                 }
                 Log.d("loginTask", user.getName());
             }

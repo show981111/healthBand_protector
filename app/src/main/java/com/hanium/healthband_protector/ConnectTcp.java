@@ -1,15 +1,11 @@
-package com.hanium.healthband;
+package com.hanium.healthband_protector;
 
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
