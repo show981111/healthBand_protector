@@ -19,7 +19,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.hanium.healthband.model.User;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -39,7 +43,8 @@ public class MainActivity extends AppCompatActivity {
     Timer timer;
     private BluetoothAdapter bluetoothAdapter;
 
-
+    public static ArrayList<User> linkedUserArrayList = new ArrayList<>();
+    public static User user;
 
 
     @Override
@@ -56,6 +61,17 @@ public class MainActivity extends AppCompatActivity {
         final Timer t = new Timer();
         final ConnectTcp connectTcp = new ConnectTcp();
 
+
+        Intent getIntent = getIntent();
+        if(getIntent != null){
+            linkedUserArrayList = getIntent.getParcelableArrayListExtra("LinkedUserList");
+            user = getIntent.getParcelableExtra("userData");
+            if(linkedUserArrayList != null) {
+                for (int i = 0; i < linkedUserArrayList.size(); i++) {
+                    Log.d("main", linkedUserArrayList.get(i).getName());
+                }
+            }
+        }
 
 
         bt_connect.setOnClickListener(new View.OnClickListener() {
@@ -128,20 +144,20 @@ public class MainActivity extends AppCompatActivity {
 
 
         //blueTooth**************************************************************
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            Log.i("info", "No fine location permissions");
-
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    1);
-        }
-
-        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, 1);
-        }
+//        if (ContextCompat.checkSelfPermission(this,
+//                Manifest.permission.ACCESS_FINE_LOCATION)
+//                != PackageManager.PERMISSION_GRANTED) {
+//
+//            Log.i("info", "No fine location permissions");
+//
+//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+//                    1);
+//        }
+//
+//        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
+//            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//            startActivityForResult(enableBtIntent, 1);
+//        }
 
 
     }
