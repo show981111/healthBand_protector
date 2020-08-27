@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         bt_disConnect = findViewById(R.id.bt_cancel);
         Button bt_goToLogin = findViewById(R.id.bt_goToLogin);
         tv_hanium.setText("hanium Project");
+        rv_wearerList = findViewById(R.id.rv_wearerList);
         final Button bt_send = findViewById(R.id.bt_send);
 
         final Timer t = new Timer();
@@ -81,6 +82,8 @@ public class MainActivity extends AppCompatActivity {
 
                 getData = "";
                 //connectTcp.sendMessage("sender,guar1,guar2,guar3,guar4");
+                Intent goToChart = new Intent(MainActivity.this, ChartActivity.class);
+                MainActivity.this.startActivity(goToChart);
 
             }
         });
