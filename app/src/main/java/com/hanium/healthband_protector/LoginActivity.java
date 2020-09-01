@@ -14,6 +14,7 @@ import android.widget.EditText;
 
 import com.hanium.healthband_protector.model.User;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -49,8 +50,8 @@ public class LoginActivity extends AppCompatActivity {
                 String userID = et_loginEmail.getText().toString();
                 String userPW = et_loginPW.getText().toString();
                 LoginTask loginTask = new LoginTask(userID, userPW);
-                loginTask.execute("http://ec2-3-34-84-225.ap-northeast-2.compute.amazonaws.com:8000/custom/login/");
-
+                //loginTask.execute("http://ec2-3-34-84-225.ap-northeast-2.compute.amazonaws.com:8000/custom/login/");
+                loginTask.execute("http://52.79.230.118:8000/user/login");
             }
         });
 
@@ -85,8 +86,8 @@ public class LoginActivity extends AppCompatActivity {
             OkHttpClient okHttpClient = new OkHttpClient();
 
             RequestBody formBody = new FormBody.Builder()
-                    .add("username", userID)
-                    .add("password", userPW)
+                    .add("userID", userID)
+                    .add("userPassword", userPW)
                     .build();
 
             Request request = new Request.Builder()
@@ -108,46 +109,55 @@ public class LoginActivity extends AppCompatActivity {
             if(response != null ){
                 try {
                     jsonData = response.body().string();
-                    JSONObject responseObject = new JSONObject(jsonData);
+                    JSONArray responseArray = new JSONArray(jsonData);
+                    JSONObject responseObject = responseArray.getJSONObject(0);
+                    //JSONObject responseObject = new JSONObject(jsonData);
                     Log.d("loginTask", jsonData);
-                    if(responseObject.getString("status").equals("success")) {
-                        token = responseObject.getString("key");
-                        JSONObject userDataObject = responseObject.getJSONObject("userdata");
+                    if(true || responseObject.getString("status").equals("success")) {
+                        //token = responseObject.getString("key");
+                        //JSONObject userDataObject = responseObject.getJSONObject("userdata");
 
-                        String username = userDataObject.getString("username");
-                        String name = userDataObject.getString("name");
-                        String user_type = userDataObject.getString("user_type");
-                        String phone_number = userDataObject.getString("phone_number");
+//                        String username = userDataObject.getString("username");
+//                        String name = userDataObject.getString("name");
+//                        String user_type = userDataObject.getString("user_type");
+//                        String phone_number = userDataObject.getString("phone_number");
 
-                        JSONObject linkedUserListObj = responseObject.getJSONObject("linked_users");
-                        Iterator<String> iter = linkedUserListObj.keys(); //This should be the iterator you want.
-                        while(iter.hasNext()){
-                            String key = iter.next();
-                            Log.d("loginTask", key);
-                            JSONObject linkedUserData = linkedUserListObj.getJSONObject(key);
-                            String linked_userID = linkedUserData.getString("username");
-                            String linked_username = linkedUserData.getString("name");
-                            String linked_phone_number = linkedUserData.getString("phone_number");
-                            String linked_user_type;
-                            if(user_type.equals("P")){
-                                linked_user_type = "W";
-                            }else{
-                                linked_user_type = "P";
-                            }
-                            User linkedUser = new User(linked_userID,linked_username,linked_user_type,linked_phone_number);
-                            linkedUserArrayList.add(linkedUser);
-                        }
+                        String username = responseObject.getString("username");
+                        String name = responseObject.getString("name");
+                        String user_type = responseObject.getString("user_type");
+                        String phone_number = responseObject.getString("phone_number");
 
-//                        for(int i = 0; i < linkedUserList.length(); i++){
-//                            JSONObject linkedUserData = linkedUserList.getJSONObject(i);
-//                            String linked_username = linkedUserData.getString("username");
-//                            String linked_name = linkedUserData.getString("name");
-//                            String linked_user_type = linkedUserData.getString("user_type");
+//                        JSONObject linkedUserListObj = responseObject.getJSONObject("linked_users");
+//                        Iterator<String> iter = linkedUserListObj.keys(); //This should be the iterator you want.
+//                        while(iter.hasNext()){
+//                            String key = iter.next();
+//                            Log.d("loginTask", key);
+//                            JSONObject linkedUserData = linkedUserListObj.getJSONObject(key);
+//                            String linked_userID = linkedUserData.getString("username");
+//                            String linked_username = linkedUserData.getString("name");
 //                            String linked_phone_number = linkedUserData.getString("phone_number");
-//
-//                            User linkedUser = new User(linked_username,linked_name,linked_user_type,linked_phone_number);
+//                            String linked_user_type;
+//                            if(user_type.equals("P")){
+//                                linked_user_type = "W";
+//                            }else{
+//                                linked_user_type = "P";
+//                            }
+//                            User linkedUser = new User(linked_userID,linked_username,linked_user_type,linked_phone_number);
 //                            linkedUserArrayList.add(linkedUser);
 //                        }
+
+                        JSONArray linkedUserListArray = responseObject.getJSONArray("linkedUserList");
+
+                        for(int i = 0; i < linkedUserListArray.length(); i++){
+                            JSONObject linkedUserData = linkedUserListArray.getJSONObject(i);
+                            String linked_username = linkedUserData.getString("username");
+                            String linked_name = linkedUserData.getString("name");
+                            String linked_user_type = linkedUserData.getString("user_type");
+                            String linked_phone_number = linkedUserData.getString("phone_number");
+
+                            User linkedUser = new User(linked_username,linked_name,linked_user_type,linked_phone_number);
+                            linkedUserArrayList.add(linkedUser);
+                        }
                         User user = new User(username, name, phone_number, user_type);
                         return user;
                     }else{
@@ -167,7 +177,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(User user) {
             super.onPostExecute(user);
-            Log.d("Login", user.getName() + user.getUser_type() + user.getPhone_number());
+            //Log.d("Login", user.getName() + user.getUser_type() + user.getPhone_number());
             if(user == null) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                 builder.setMessage("아이디 비밀번호를 다시 확인해주세요!")
@@ -175,7 +185,7 @@ public class LoginActivity extends AppCompatActivity {
                         .create()
                         .show();
             }else{
-                if(user.getUser_type().equals("P")) {
+                if(user.getUser_type().equals("P") || true) {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.putParcelableArrayListExtra("LinkedUserList", linkedUserArrayList);
                     intent.putExtra("userData", user);

@@ -16,13 +16,31 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.hanium.healthband_protector.model.LinkedInfo;
+import com.hanium.healthband_protector.model.Message;
 import com.hanium.healthband_protector.model.User;
 import com.hanium.healthband_protector.recyclerView.wearerListAdapter;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Timer;
+
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -46,6 +64,12 @@ public class MainActivity extends AppCompatActivity {
     private wearerListAdapter wearerListAdapter;
     private String token;
 
+    private EditText et_message;
+    private Button bt_send;
+
+    public String TAG = "data from server ******";
+
+    private Socket mSocket;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         Button bt_goToLogin = findViewById(R.id.bt_goToLogin);
         tv_hanium.setText("hanium Project");
         rv_wearerList = findViewById(R.id.rv_wearerList);
-        final Button bt_send = findViewById(R.id.bt_send);
+        bt_send = findViewById(R.id.bt_send);
 
         final Timer t = new Timer();
         final ConnectTcp connectTcp = new ConnectTcp();
@@ -76,6 +100,12 @@ public class MainActivity extends AppCompatActivity {
                 rv_wearerList.setAdapter(wearerListAdapter);
             }
         }
+
+//        user = new User("p3@gmail.com", "p3@gmail.com", "11111", "P");
+//        linkedUserArrayList = new ArrayList<>();
+//        linkedUserArrayList.add(new User("w3@gmail.com", "w3@gmail.com", "11111", "W"));
+//        linkedUserArrayList.add(new User("w2@gmail.com", "w2@gmail.com", "11111", "W"));
+//        linkedUserArrayList.add(new User("test@test.com", "test@test.com", "11111", "W"));
 
 
         bt_connect.setOnClickListener(new View.OnClickListener() {
@@ -99,44 +129,46 @@ public class MainActivity extends AppCompatActivity {
 //                    Log.d("tcp", "fail to close ");
 //                    e.printStackTrace();
 //                }
-                Intent goToChart = new Intent(MainActivity.this, EnvChartActivity.class);
-                MainActivity.this.startActivity(goToChart);
+                mSocket.disconnect();
+
+//                Intent goToChart = new Intent(MainActivity.this, EnvChartActivity.class);
+//                MainActivity.this.startActivity(goToChart);
             }
         });//데이터 전송 중단
 
-        bt_send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                    //connectTcp.sendAdditionalMessage("10,122,123,-123,-132,-123,312,321");
-                    //connectTcp.sendDataEverySecond();
-//                Log.d("SCAN_BLE", "start");
-//                Log.d("BLUE", "Start");
-//                Intent startConnect = new Intent(MainActivity.this, DeviceControlActivity.class);
-//                //DeviceScanActivity.class.getLayoutInflater();
-//                MainActivity.this.startActivity(startConnect);
-
-                final EditText input = new EditText(MainActivity.this);
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT);
-                input.setLayoutParams(lp);
-
-                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("Title")
-                        .setMessage("Message")
-                        .setView(input)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                String editTextInput = input.getText().toString();
-                                Log.d("onclick","editext value is: "+ editTextInput);
-                            }
-                        })
-                        .setNegativeButton("Cancel", null)
-                        .create();
-                dialog.show();
-            }
-        });
+//        bt_send.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                    //connectTcp.sendAdditionalMessage("10,122,123,-123,-132,-123,312,321");
+//                    //connectTcp.sendDataEverySecond();
+////                Log.d("SCAN_BLE", "start");
+////                Log.d("BLUE", "Start");
+////                Intent startConnect = new Intent(MainActivity.this, DeviceControlActivity.class);
+////                //DeviceScanActivity.class.getLayoutInflater();
+////                MainActivity.this.startActivity(startConnect);
+//
+//                final EditText input = new EditText(MainActivity.this);
+//                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+//                        LinearLayout.LayoutParams.MATCH_PARENT,
+//                        LinearLayout.LayoutParams.MATCH_PARENT);
+//                input.setLayoutParams(lp);
+//
+//                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+//                        .setTitle("Title")
+//                        .setMessage("Message")
+//                        .setView(input)
+//                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialogInterface, int i) {
+//                                String editTextInput = input.getText().toString();
+//                                Log.d("onclick","editext value is: "+ editTextInput);
+//                            }
+//                        })
+//                        .setNegativeButton("Cancel", null)
+//                        .create();
+//                dialog.show();
+//            }
+//        });
 
         //login 창으로 이동
         bt_goToLogin.setOnClickListener(new View.OnClickListener() {
@@ -150,9 +182,102 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        String SERVER_PATH = "http://52.79.230.118:8000";
+        et_message = findViewById(R.id.et_message);
+
+        try {
+            mSocket = IO.socket(SERVER_PATH);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        mSocket.connect();
+
+        Gson gson = new Gson();
+        try {
+            LinkedInfo msg = new LinkedInfo(user.getUser_type() ,user.getUsername(), linkedUserArrayList);
+            JSONObject obj = new JSONObject(gson.toJson(msg));
+            mSocket.emit("joinLink", obj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+//        for(int i = 0; i< linkedUserArrayList.size(); i++){
+//
+//            mSocket.emit("joinLink", user.getUser_type()+"," +user.getUsername() + "," +linkedUserArrayList.get(i).getUsername());
+//        }
 
 
+        // 이제 연결이 성공적으로 되게 되면, server측에서 "connect" event 를 발생시키고
+        // 아래코드가 그 event 를 핸들링 합니다. onConnect는 65번째 줄로 가서 살펴 보도록 합니다.
+        mSocket.on(Socket.EVENT_CONNECT, onConnect);
+        //mSocket.on("welcome", receiveMessage);
+
+        mSocket.on("welcome", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                try {
+                    JSONObject messageJson = new JSONObject(args[0].toString());
+                    String receivedData = messageJson.getString("text");
+                    Log.w(TAG, "received Data from socekt" + messageJson);
+                    Log.w(TAG, "received Data from socekt" + receivedData);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        mSocket.on("sendData", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                try {
+                    JSONObject messageJson = new JSONObject(args[0].toString());
+                    String receivedData = messageJson.getString("text");
+                    Log.w(TAG, "received Data from socekt" + messageJson);
+                    Log.w(TAG, "received Data from socekt" + receivedData);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        //mSocket.on("logout", onLogout);
+
+        bt_send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String content = et_message.getText().toString();
+                Gson gson = new Gson();
+                try {
+                    Message msg = new Message(user.getUsername(), content);
+                    JSONObject obj = new JSONObject(gson.toJson(msg));
+                    mSocket.emit("androidMessage", obj);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+
+                Log.d(TAG, "Socket is connected with " +  user.getUsername());
+            }
+        });
 
 
     }
+
+    Emitter.Listener onConnect = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            if(mSocket == null){
+                Log.w(TAG, "null!!!");
+            }else{
+                mSocket.emit("login", user.getUsername());
+            }
+            Log.d(TAG, "Socket is connected with " +  user.getUsername());
+        }
+    };
+
+
+
+
+
 }
