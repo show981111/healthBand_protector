@@ -68,6 +68,7 @@ public class LoginActivity extends AppCompatActivity {
         private String userID;
         private String userPW;
         private ArrayList<User> linkedUserArrayList = new ArrayList<>();
+        private String token;
 
         public LoginTask(String userID, String userPW) {
             this.userID = userID;
@@ -110,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
                     JSONObject responseObject = new JSONObject(jsonData);
                     Log.d("loginTask", jsonData);
                     if(responseObject.getString("status").equals("success")) {
-                        String token = responseObject.getString("key");
+                        token = responseObject.getString("key");
                         JSONObject userDataObject = responseObject.getJSONObject("userdata");
 
                         String username = userDataObject.getString("username");
@@ -178,6 +179,7 @@ public class LoginActivity extends AppCompatActivity {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.putParcelableArrayListExtra("LinkedUserList", linkedUserArrayList);
                     intent.putExtra("userData", user);
+                    intent.putExtra("token", token);
                     LoginActivity.this.startActivity(intent);
                 }else{
                     AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);

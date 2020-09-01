@@ -21,5 +21,7 @@ public class wearerInfoActivity extends AppCompatActivity {
             tv_wearerName.setText(getIntent.getStringExtra("userName"));
             wearerID = getIntent.getStringExtra("userID");
         }
+
+
     }
 }

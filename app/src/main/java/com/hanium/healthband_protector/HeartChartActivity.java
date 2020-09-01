@@ -30,95 +30,27 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 
-public class ChartActivity extends AppCompatActivity {
+public class HeartChartActivity extends AppCompatActivity {
 
-    private TextView tv_avg;
+    private TextView tv_min;
+    private TextView tv_max;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chart);
-        tv_avg = findViewById(R.id.tv_avg);
-        /*
-        CandleStickChart candleStickChart = findViewById(R.id.combined_chart);
-        candleStickChart.setHighlightPerDragEnabled(true);
+        tv_min = findViewById(R.id.tv_min);
+        tv_max = findViewById(R.id.tv_max);
 
-        candleStickChart.setDrawBorders(true);
-
-        candleStickChart.setBorderColor(getResources().getColor(R.color.colorPrimary));
-
-        YAxis yAxis = candleStickChart.getAxisLeft();
-        YAxis rightAxis = candleStickChart.getAxisRight();
-        yAxis.setDrawGridLines(true);
-        rightAxis.setDrawGridLines(true);
-        candleStickChart.requestDisallowInterceptTouchEvent(true);
-
-        XAxis xAxis = candleStickChart.getXAxis();
-
-        xAxis.setDrawGridLines(true);// disable x axis grid lines
-        rightAxis.setTextColor(Color.WHITE);
-        xAxis.setGranularity(1f);
-        xAxis.setGranularityEnabled(true);
-        xAxis.setAvoidFirstLastClipping(true);
-
-        Legend l = candleStickChart.getLegend();
-        l.setEnabled(true);
-
-
-        float[] dataPair = new float[]{50f, 100f};
-
-        ArrayList<CandleEntry> yValsCandleStick= new ArrayList<CandleEntry>();
-        yValsCandleStick.add(new CandleEntry(0, 120f, 100f, 120f, 100f, 200));
-        yValsCandleStick.add(new CandleEntry(1, 130f, 90f, 130f, 90f, 100));
-        yValsCandleStick.add(new CandleEntry(2, 123f,  80f, 123f,  80f, 40));
-        yValsCandleStick.add(new CandleEntry(3, 127f, 75f, 127f, 75f, 50));
-        yValsCandleStick.add(new CandleEntry(4, 127f, 75f, 127f, 75f, 60));
-        yValsCandleStick.add(new CandleEntry(5, 127f, 75f, 127f, 75f, 70));
-        yValsCandleStick.add(new CandleEntry(6, 127f, 75f, 127f, 75f, 80));
-
-        ArrayList<Entry> line= new ArrayList<Entry>();
-        line.add(new Entry(0, 100));
-        line.add(new Entry(1, 102));
-        line.add(new Entry(2, 100));
-        line.add(new Entry(3, 105));
-        line.add(new Entry(4, 100));
-        line.add(new Entry(5, 109));
-        line.add(new Entry(6, 100));
-
-        ArrayList<Entry>
-        CandleDataSet set1 = new CandleDataSet(yValsCandleStick, "DataSet 1");
-        set1.setColor(Color.rgb(80, 80, 80));
-        set1.setShadowColor(getResources().getColor(R.color.colorPrimaryDark));
-        set1.setShadowWidth(0f);
-        set1.setDecreasingColor(getResources().getColor(R.color.colorAccent));
-        set1.setDecreasingPaintStyle(Paint.Style.FILL);
-        set1.setIncreasingColor(getResources().getColor(R.color.colorAccent));
-        set1.setIncreasingPaintStyle(Paint.Style.FILL);
-        set1.setNeutralColor(Color.LTGRAY);
-        set1.setDrawValues(true);
-
-
-
-// create a data object with the datasets
-        CandleData data = new CandleData(set1);
-
-
-// set data
-        candleStickChart.setData(data);
-        candleStickChart.invalidate();
-
-
-        candleStickChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-            @Override
-            public void onValueSelected(Entry e, Highlight h) {
-                tv_avg.setText(String.valueOf(e.getX()) + " val " + String.valueOf(e.getData()));
-            }
-
-            @Override
-            public void onNothingSelected() {
-
-            }
-        });*/
+        final ArrayList<String> dateList = new ArrayList<>();
+        dateList.add("8/1");
+        dateList.add("8/2");
+        dateList.add("8/3");
+        dateList.add("8/4");
+        dateList.add("8/5");
+        dateList.add("8/6");
+        dateList.add("8/7");
 
         CombinedChart chart = findViewById(R.id.combined_chart);
         chart.getDescription().setEnabled(false);
@@ -140,15 +72,16 @@ public class ChartActivity extends AppCompatActivity {
 //        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
         XAxis xAxis = chart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.TOP_INSIDE);
-//        xAxis.setAxisMinimum(0f);
+        xAxis.setPosition(XAxis.XAxisPosition.TOP);
+        xAxis.setAxisMinimum(-0.25f);
         xAxis.setGranularity(1f);
-//        xAxis.setValueFormatter(new ValueFormatter() {
-//            @Override
-//            public String getFormattedValue(float value) {
-//                return months[(int) value % months.length];
-//            }
-//        });
+        xAxis.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return dateList.get((int) value);
+
+            }
+        });
 
         CombinedData data = new CombinedData();
 
@@ -160,6 +93,25 @@ public class ChartActivity extends AppCompatActivity {
         chart.setData(data);
         chart.invalidate();
 
+        chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                if(e instanceof CandleEntry){
+                    CandleEntry candleEntry = (CandleEntry) e;
+                    tv_max.setText(String.valueOf(candleEntry.getHigh()));
+                    tv_min.setText(String.valueOf(candleEntry.getLow()));
+
+                    //tv_avg.setText(candleEntry.getData() + " 최대 : " + candleEntry.ge);
+                }
+                //if(e.getClass())
+
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
 
     }
 
@@ -201,7 +153,6 @@ public class ChartActivity extends AppCompatActivity {
         CandleData d = new CandleData();
 
         ArrayList<CandleEntry> entries = new ArrayList<>();
-
 
         entries.add(new CandleEntry(0, 120f, 100f, 120f, 100f, 200));
         entries.add(new CandleEntry(1, 130f, 90f, 130f, 90f, 100));

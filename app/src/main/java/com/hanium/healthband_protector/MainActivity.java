@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     public static User user;
     private RecyclerView rv_wearerList;
     private wearerListAdapter wearerListAdapter;
+    private String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         if(getIntent != null){
             linkedUserArrayList = getIntent.getParcelableArrayListExtra("LinkedUserList");
             user = getIntent.getParcelableExtra("userData");
+            token = getIntent.getStringExtra("token");
             if(linkedUserArrayList != null) {
                 for (int i = 0; i < linkedUserArrayList.size(); i++) {
                     Log.d("main", linkedUserArrayList.get(i).getName());
@@ -82,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
                 getData = "";
                 //connectTcp.sendMessage("sender,guar1,guar2,guar3,guar4");
-                Intent goToChart = new Intent(MainActivity.this, ChartActivity.class);
+                Intent goToChart = new Intent(MainActivity.this, HeartChartActivity.class);
                 MainActivity.this.startActivity(goToChart);
 
             }
@@ -91,12 +93,14 @@ public class MainActivity extends AppCompatActivity {
         bt_disConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    connectTcp.closeSocket();
-                } catch (IOException e) {
-                    Log.d("tcp", "fail to close ");
-                    e.printStackTrace();
-                }
+//                try {
+//                    connectTcp.closeSocket();
+//                } catch (IOException e) {
+//                    Log.d("tcp", "fail to close ");
+//                    e.printStackTrace();
+//                }
+                Intent goToChart = new Intent(MainActivity.this, EnvChartActivity.class);
+                MainActivity.this.startActivity(goToChart);
             }
         });//데이터 전송 중단
 

@@ -18,7 +18,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ChartActivity"></activity>
+        <activity android:name=".EnvChartActivity"></activity>
+        <activity android:name=".HeartChartActivity" />
         <activity android:name=".wearerInfoActivity" />
 
         <uses-library

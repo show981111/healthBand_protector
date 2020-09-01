@@ -46,6 +46,8 @@ public class wearerListAdapter extends RecyclerView.Adapter<wearerViewHolder> {
                 mContext.startActivity(intent);
             }
         });
+
+
     }
 
     @Override
