@@ -5,18 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hanium.healthband_protector.model.LinkedInfo;
@@ -24,11 +20,9 @@ import com.hanium.healthband_protector.model.Message;
 import com.hanium.healthband_protector.model.User;
 import com.hanium.healthband_protector.recyclerView.wearerListAdapter;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -36,11 +30,6 @@ import java.util.Timer;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.WebSocket;
-import okhttp3.WebSocketListener;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -58,11 +47,11 @@ public class MainActivity extends AppCompatActivity {
     Timer timer;
     private BluetoothAdapter bluetoothAdapter;
 
-    public static ArrayList<User> linkedUserArrayList = new ArrayList<>();
-    public static User user;
+    private static ArrayList<User> linkedUserArrayList = new ArrayList<>();
+    private static User user;
     private RecyclerView rv_wearerList;
     private wearerListAdapter wearerListAdapter;
-    private String token;
+    private String token ;
 
     private EditText et_message;
     private Button bt_send;
@@ -95,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 0; i < linkedUserArrayList.size(); i++) {
                     Log.d("main", linkedUserArrayList.get(i).getName());
                 }
-                wearerListAdapter = new wearerListAdapter(MainActivity.this, linkedUserArrayList);
+                wearerListAdapter = new wearerListAdapter(MainActivity.this, linkedUserArrayList, token);
                 rv_wearerList.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL,false));
                 rv_wearerList.setAdapter(wearerListAdapter);
             }
@@ -114,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
                 getData = "";
                 //connectTcp.sendMessage("sender,guar1,guar2,guar3,guar4");
-                Intent goToChart = new Intent(MainActivity.this, HeartChartActivity.class);
+                Intent goToChart = new Intent(MainActivity.this, ChartActivity.class);
                 MainActivity.this.startActivity(goToChart);
 
             }

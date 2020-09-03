@@ -18,10 +18,12 @@ public class wearerListAdapter extends RecyclerView.Adapter<wearerViewHolder> {
 
     private Context mContext;
     private ArrayList<User> wearerList = new ArrayList<>();
+    private final String token;
 
-    public wearerListAdapter(Context mContext, ArrayList<User> wearerList) {
+    public wearerListAdapter(Context mContext, ArrayList<User> wearerList, String token) {
         this.mContext = mContext;
         this.wearerList = wearerList;
+        this.token = token;
     }
 
     @NonNull
@@ -43,6 +45,7 @@ public class wearerListAdapter extends RecyclerView.Adapter<wearerViewHolder> {
                 Intent intent = new Intent(mContext, wearerInfoActivity.class);
                 intent.putExtra("userName",wearerList.get(position).getName());
                 intent.putExtra("userID",wearerList.get(position).getUsername());
+                intent.putExtra("token", token);
                 mContext.startActivity(intent);
             }
         });

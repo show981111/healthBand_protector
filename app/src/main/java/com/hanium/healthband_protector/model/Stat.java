@@ -4,13 +4,19 @@ public class Stat {
     private float mean;
     private float max;
     private float min;
+    private String date;
 
-    public Stat(int mean, int max, int min) {
+
+
+    public Stat(float mean, float max, float min, String date) {
         this.mean = mean;
         this.max = max;
         this.min = min;
+        this.date = date;
     }
-
+    public String getDate() {
+        return date;
+    }
     public float getMean() {
         return mean;
     }

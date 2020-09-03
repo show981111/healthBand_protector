@@ -74,13 +74,13 @@ public class fetchGuardiansList extends AsyncTask<String, Void, User[]> {
     protected void onPostExecute(User[] users) {
         super.onPostExecute(users);
         if(users != null){
-            for(User user1 : users){
-                userArrayList.add(user1);
-            }
-            wearerListAdapter = new wearerListAdapter(mContext,userArrayList);
-
-            recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL,false));
-            recyclerView.setAdapter(wearerListAdapter);
+//            for(User user1 : users){
+//                userArrayList.add(user1);
+//            }
+//            wearerListAdapter = new wearerListAdapter(mContext,userArrayList);
+//
+//            recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL,false));
+//            recyclerView.setAdapter(wearerListAdapter);
         }
     }
 }
