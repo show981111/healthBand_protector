@@ -50,11 +50,18 @@ public class LoginActivity extends AppCompatActivity {
         bt_loginWithID.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener( LoginActivity.this,  new OnSuccessListener<InstanceIdResult>() {
+                    @Override
+                    public void onSuccess(InstanceIdResult instanceIdResult) {
+                        String firebaseToken = instanceIdResult.getToken();
+                        Log.d("asdf", firebaseToken);
+                    }
+                });
                 String userID = et_loginEmail.getText().toString();
                 String userPW = et_loginPW.getText().toString();
                 LoginTask loginTask = new LoginTask(userID, userPW);
                 loginTask.execute("http://ec2-3-34-84-225.ap-northeast-2.compute.amazonaws.com:8000/custom/login/");
-//                loginTask.execute("http://52.79.230.118:8000/user/login");
+                //loginTask.execute("http://52.79.230.118:8000/user/login");
             }
         });
 
@@ -65,6 +72,8 @@ public class LoginActivity extends AppCompatActivity {
                 LoginActivity.this.startActivity(goToRegister);
             }
         });
+
+
     }
 
     class LoginTask extends AsyncTask<String, Void, User>{
@@ -88,13 +97,7 @@ public class LoginActivity extends AppCompatActivity {
                 return null;
             }
 
-            FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener( LoginActivity.this,  new OnSuccessListener<InstanceIdResult>() {
-                @Override
-                public void onSuccess(InstanceIdResult instanceIdResult) {
-                    firebaseToken = instanceIdResult.getToken();
 
-                }
-            });
 
             OkHttpClient okHttpClient = new OkHttpClient();
 
@@ -155,7 +158,7 @@ public class LoginActivity extends AppCompatActivity {
                             }else{
                                 linked_user_type = "P";
                             }
-                            User linkedUser = new User(linked_userID,linked_username,linked_user_type,linked_phone_number);
+                            User linkedUser = new User(linked_userID,linked_username,linked_phone_number,linked_user_type);
                             linkedUserArrayList.add(linkedUser);
                         }
 

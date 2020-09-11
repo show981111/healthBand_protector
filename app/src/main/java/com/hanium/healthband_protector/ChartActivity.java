@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.CombinedChart;
@@ -24,6 +25,7 @@ public class ChartActivity extends AppCompatActivity {
     private String token;
     private TextView tv_mean;
     private String sensorType;
+    private String wearerID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +44,8 @@ public class ChartActivity extends AppCompatActivity {
             }else{
                 label = "주변 소음";
             }
+            wearerID = getIntent.getStringExtra("userID");
+            Log.d("wearer", wearerID);
             String title = getIntent.getStringExtra("userName") + "님의 "+ label+ "차트";
             tv_title.setText(title);
         }
@@ -72,13 +76,9 @@ public class ChartActivity extends AppCompatActivity {
         xAxis.setGranularity(1f);
 
 
-        fetchStatList fetchStatList = new fetchStatList(sensorType,chart, xAxis, token);
+        fetchStatList fetchStatList = new fetchStatList(sensorType,chart, xAxis, token, wearerID);
+        fetchStatList.execute(API.sensorData);
 
-        if(label.equals("심박수")){
-            fetchStatList.execute(API.HEART);
-        }else if(label.equals("주변 소음")){
-            fetchStatList.execute(API.SOUND);
-        }
 
 
 

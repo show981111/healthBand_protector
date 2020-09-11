@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothAdapter bluetoothAdapter;
 
     private static ArrayList<User> linkedUserArrayList = new ArrayList<>();
-    private static User user;
+    private static User user = new User("a", "a", "a", "a");
     private RecyclerView rv_wearerList;
     private wearerListAdapter wearerListAdapter;
     private String token ;
@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
         bt_send = findViewById(R.id.bt_send);
 
         final Timer t = new Timer();
-        final ConnectTcp connectTcp = new ConnectTcp();
 
 
         Intent getIntent = getIntent();
@@ -80,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
             linkedUserArrayList = getIntent.getParcelableArrayListExtra("LinkedUserList");
             user = getIntent.getParcelableExtra("userData");
             token = getIntent.getStringExtra("token");
+            linkedUserArrayList = new ArrayList<>();
+            linkedUserArrayList.add(new User("w2", "w2", "w2", "w2"));
             if(linkedUserArrayList != null) {
                 for (int i = 0; i < linkedUserArrayList.size(); i++) {
                     Log.d("main", linkedUserArrayList.get(i).getName());
@@ -88,6 +89,12 @@ public class MainActivity extends AppCompatActivity {
                 rv_wearerList.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL,false));
                 rv_wearerList.setAdapter(wearerListAdapter);
             }
+        }
+
+
+
+        if(linkedUserArrayList.size() > 0){
+            bt_goToLogin.setVisibility(View.GONE);
         }
 
 //        user = new User("p3@gmail.com", "p3@gmail.com", "11111", "P");
@@ -118,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
 //                    Log.d("tcp", "fail to close ");
 //                    e.printStackTrace();
 //                }
-                mSocket.disconnect();
 
 //                Intent goToChart = new Intent(MainActivity.this, EnvChartActivity.class);
 //                MainActivity.this.startActivity(goToChart);
@@ -171,63 +177,73 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        String SERVER_PATH = "http://52.79.230.118:8000";
-        et_message = findViewById(R.id.et_message);
-
-        try {
-            mSocket = IO.socket(SERVER_PATH);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
-        mSocket.connect();
-
-        Gson gson = new Gson();
-        try {
-            LinkedInfo msg = new LinkedInfo(user.getUser_type() ,user.getUsername(), linkedUserArrayList);
-            JSONObject obj = new JSONObject(gson.toJson(msg));
-            mSocket.emit("joinLink", obj);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-//        for(int i = 0; i< linkedUserArrayList.size(); i++){
+//        String SERVER_PATH = "http://52.79.230.118:8000";
 //
-//            mSocket.emit("joinLink", user.getUser_type()+"," +user.getUsername() + "," +linkedUserArrayList.get(i).getUsername());
+//        final mySocket mySocket = new mySocket(SERVER_PATH,user, linkedUserArrayList);
+//        mySocket.connectToServer();
+
+
+        //*************SOCKET
+
+//        String SERVER_PATH = "http://52.79.230.118:8000";
+        et_message = findViewById(R.id.et_message);
+//
+//        try {
+//            mSocket = IO.socket(SERVER_PATH);
+//        } catch (URISyntaxException e) {
+//            e.printStackTrace();
 //        }
+//
+//        mSocket.connect();
+//
+//        Gson gson = new Gson();
+//        try {
+//            LinkedInfo msg = new LinkedInfo(user.getUser_type() ,user.getUsername(), linkedUserArrayList);
+//            JSONObject obj = new JSONObject(gson.toJson(msg));
+//            mSocket.emit("joinLink", obj);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+////        for(int i = 0; i< linkedUserArrayList.size(); i++){
+////
+////            mSocket.emit("joinLink", user.getUser_type()+"," +user.getUsername() + "," +linkedUserArrayList.get(i).getUsername());
+////        }
+//
+//
+//        // 이제 연결이 성공적으로 되게 되면, server측에서 "connect" event 를 발생시키고
+//        // 아래코드가 그 event 를 핸들링 합니다. onConnect는 65번째 줄로 가서 살펴 보도록 합니다.
+//        mSocket.on(Socket.EVENT_CONNECT, onConnect);
+//        //mSocket.on("welcome", receiveMessage);
+//
+//        mSocket.on("welcome", new Emitter.Listener() {
+//            @Override
+//            public void call(Object... args) {
+//                try {
+//                    JSONObject messageJson = new JSONObject(args[0].toString());
+//                    String receivedData = messageJson.getString("text");
+//                    Log.w(TAG, "received Data from socekt" + messageJson);
+//                    Log.w(TAG, "received Data from socekt" + receivedData);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//
+//        mSocket.on("sendData", new Emitter.Listener() {
+//            @Override
+//            public void call(Object... args) {
+//                try {
+//                    JSONObject messageJson = new JSONObject(args[0].toString());
+//                    String receivedData = messageJson.getString("text");
+//                    Log.w(TAG, "received Data from socekt" + messageJson);
+//                    Log.w(TAG, "received Data from socekt" + receivedData);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
 
-
-        // 이제 연결이 성공적으로 되게 되면, server측에서 "connect" event 를 발생시키고
-        // 아래코드가 그 event 를 핸들링 합니다. onConnect는 65번째 줄로 가서 살펴 보도록 합니다.
-        mSocket.on(Socket.EVENT_CONNECT, onConnect);
-        //mSocket.on("welcome", receiveMessage);
-
-        mSocket.on("welcome", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                try {
-                    JSONObject messageJson = new JSONObject(args[0].toString());
-                    String receivedData = messageJson.getString("text");
-                    Log.w(TAG, "received Data from socekt" + messageJson);
-                    Log.w(TAG, "received Data from socekt" + receivedData);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        mSocket.on("sendData", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                try {
-                    JSONObject messageJson = new JSONObject(args[0].toString());
-                    String receivedData = messageJson.getString("text");
-                    Log.w(TAG, "received Data from socekt" + messageJson);
-                    Log.w(TAG, "received Data from socekt" + receivedData);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        //*************SOCKET
 
         //mSocket.on("logout", onLogout);
 
@@ -235,35 +251,35 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String content = et_message.getText().toString();
-                Gson gson = new Gson();
-                try {
-                    Message msg = new Message(user.getUsername(), content);
-                    JSONObject obj = new JSONObject(gson.toJson(msg));
-                    mSocket.emit("androidMessage", obj);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+//                Gson gson = new Gson();
+//                try {
+//                    Message msg = new Message(user.getUsername(), content);
+//                    JSONObject obj = new JSONObject(gson.toJson(msg));
+//                    mSocket.emit("androidMessage", obj);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+                //mySocket.sendDataToServer(content);
 
 
-
-                Log.d(TAG, "Socket is connected with " +  user.getUsername());
+                //Log.d(TAG, "Socket is connected with " +  user.getUsername());
             }
         });
 
 
     }
 
-    Emitter.Listener onConnect = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            if(mSocket == null){
-                Log.w(TAG, "null!!!");
-            }else{
-                mSocket.emit("login", user.getUsername());
-            }
-            Log.d(TAG, "Socket is connected with " +  user.getUsername());
-        }
-    };
+//    Emitter.Listener onConnect = new Emitter.Listener() {
+//        @Override
+//        public void call(Object... args) {
+//            if(mSocket == null){
+//                Log.w(TAG, "null!!!");
+//            }else{
+//                mSocket.emit("login", user.getUsername());
+//            }
+//            Log.d(TAG, "Socket is connected with " +  user.getUsername());
+//        }
+//    };
 
 
 

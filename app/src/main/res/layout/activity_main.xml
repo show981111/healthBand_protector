@@ -8,6 +8,7 @@
     tools:context=".MainActivity">
 
     <EditText
+        android:visibility="gone"
         android:id="@+id/et_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,6 +16,7 @@
 
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/tv_receivedData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,6 +25,7 @@
          />
 
     <Button
+        android:visibility="gone"
         android:id="@+id/bt_connect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,6 +33,7 @@
          />
 
     <Button
+        android:visibility="gone"
         android:id="@+id/bt_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -44,6 +48,7 @@
         />
 
     <Button
+        android:visibility="gone"
         android:id="@+id/bt_send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

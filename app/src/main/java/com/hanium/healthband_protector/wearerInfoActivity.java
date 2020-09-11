@@ -36,6 +36,7 @@ public class wearerInfoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(wearerInfoActivity.this, ChartActivity.class);
                 intent.putExtra("token", token);
+                intent.putExtra("userID", wearerID);
                 intent.putExtra("userName", tv_wearerName.getText().toString());
                 intent.putExtra("sensorType", "heartRate");
 
@@ -48,6 +49,7 @@ public class wearerInfoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(wearerInfoActivity.this, ChartActivity.class);
                 intent.putExtra("token", token);
+                intent.putExtra("userID", wearerID);
                 intent.putExtra("userName", tv_wearerName.getText().toString());
                 intent.putExtra("sensorType", "sound");
 
@@ -60,6 +62,7 @@ public class wearerInfoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(wearerInfoActivity.this, EnvChartActivity.class);
                 intent.putExtra("token", token);
+                intent.putExtra("userID", wearerID);
                 intent.putExtra("userName", tv_wearerName.getText().toString());
                 wearerInfoActivity.this.startActivity(intent);
             }
