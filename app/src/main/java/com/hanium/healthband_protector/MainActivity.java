@@ -250,6 +250,8 @@ public class MainActivity extends AppCompatActivity {
         bt_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, MapActivity.class);
+                MainActivity.this.startActivity(intent);
                 String content = et_message.getText().toString();
 //                Gson gson = new Gson();
 //                try {

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,6 +31,7 @@ public class wearerInfoActivity extends AppCompatActivity {
         RelativeLayout rl_heart = findViewById(R.id.rl_heart);
         RelativeLayout rl_env = findViewById(R.id.rl_tempHumi);
         RelativeLayout rl_sound = findViewById(R.id.rl_sound);
+        Button bt_viewLocation = findViewById(R.id.bt_viewLocation);
 
         rl_heart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +63,17 @@ public class wearerInfoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(wearerInfoActivity.this, EnvChartActivity.class);
+                intent.putExtra("token", token);
+                intent.putExtra("userID", wearerID);
+                intent.putExtra("userName", tv_wearerName.getText().toString());
+                wearerInfoActivity.this.startActivity(intent);
+            }
+        });
+
+        bt_viewLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(wearerInfoActivity.this, MapActivity.class);
                 intent.putExtra("token", token);
                 intent.putExtra("userID", wearerID);
                 intent.putExtra("userName", tv_wearerName.getText().toString());

@@ -271,5 +271,13 @@
 
     </RelativeLayout>
 
+    <Button
+        android:id="@+id/bt_viewLocation"
+        android:layout_margin="15dp"
+        android:background="@drawable/button_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="착용자 위치 조회"/>
+
 
 </LinearLayout>

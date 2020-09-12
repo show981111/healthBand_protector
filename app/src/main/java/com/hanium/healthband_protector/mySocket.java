@@ -1,11 +1,17 @@
 package com.hanium.healthband_protector;
 
+import android.app.Activity;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.hanium.healthband_protector.model.LinkedInfo;
 import com.hanium.healthband_protector.model.Message;
 import com.hanium.healthband_protector.model.User;
+import com.naver.maps.geometry.LatLng;
+import com.naver.maps.map.CameraUpdate;
+import com.naver.maps.map.NaverMap;
+import com.naver.maps.map.overlay.LocationOverlay;
+import com.naver.maps.map.overlay.Marker;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,10 +48,10 @@ public class mySocket {
         mSocket.connect();
         mSocket.on(Socket.EVENT_CONNECT, onConnect);
         joinLink();
-        waitEvent();
+//        waitEvent();
     }
 
-    public void joinLink(){
+    private void joinLink(){
         LinkedInfo msg = new LinkedInfo(user.getUser_type() ,user.getUsername(), linkedUserArrayList);
         Gson gson = new Gson();
         try {
@@ -56,7 +62,7 @@ public class mySocket {
         }
     }
 
-    public void waitEvent(){
+    public void waitSensorData(){
         //mSocket.on("welcome", receiveMessage);
 
         mSocket.on("welcome", new Emitter.Listener() {
@@ -79,6 +85,7 @@ public class mySocket {
                 try {
                     JSONObject messageJson = new JSONObject(args[0].toString());
                     String receivedData = messageJson.getString("text");
+
                     Log.w(TAG, "received Data from socekt" + messageJson);
                     Log.w(TAG, "received Data from socekt" + receivedData);
                 } catch (JSONException e) {
@@ -87,6 +94,37 @@ public class mySocket {
             }
         });
     }
+
+    public void getLocation(final Activity activity, final NaverMap naverMap, final LocationOverlay locationOverlay){
+        mSocket.on("sendLocation", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                try {
+                    JSONObject messageJson = new JSONObject(args[0].toString());
+                    String receivedData = messageJson.getString("text");
+                    Log.w(TAG, "received Data from socekt" + messageJson);
+                    final double lang = messageJson.getDouble("lang");
+                    final double lat = messageJson.getDouble("lat");
+
+
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            locationOverlay.setPosition(new LatLng(lat, lang));
+                            CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(lat, lang));
+                            naverMap.moveCamera(cameraUpdate);
+
+                        }
+                    });
+                    Log.w(TAG, "received Data from socekt" + receivedData + " " + lat + " " + lang);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+
 
     public void sendDataToServer(String content){
         Gson gson = new Gson();
