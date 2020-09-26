@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -26,6 +27,7 @@ public class wearerInfoActivity extends AppCompatActivity {
             tv_wearerName.setText(getIntent.getStringExtra("userName"));
             wearerID = getIntent.getStringExtra("userID");
             token = getIntent.getStringExtra("token");
+
         }
 
         RelativeLayout rl_heart = findViewById(R.id.rl_heart);
@@ -75,9 +77,10 @@ public class wearerInfoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(wearerInfoActivity.this, MapActivity.class);
                 intent.putExtra("token", token);
-                intent.putExtra("userID", wearerID);
+                intent.putExtra("wearerID", wearerID);
                 intent.putExtra("userName", tv_wearerName.getText().toString());
                 wearerInfoActivity.this.startActivity(intent);
+                Log.w("FETCHLOC", "wearerInfo "+wearerID + " " + token);
             }
         });
 

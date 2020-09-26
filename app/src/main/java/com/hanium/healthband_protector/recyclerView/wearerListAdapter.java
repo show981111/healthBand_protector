@@ -2,6 +2,7 @@ package com.hanium.healthband_protector.recyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -43,6 +44,7 @@ public class wearerListAdapter extends RecyclerView.Adapter<wearerViewHolder> {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, wearerInfoActivity.class);
+                Log.w("FETCHLOC","view hold "+wearerList.get(position).getUsername() + " " + token );
                 intent.putExtra("userName",wearerList.get(position).getName());
                 intent.putExtra("userID",wearerList.get(position).getUsername());
                 intent.putExtra("token", token);

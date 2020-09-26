@@ -15,9 +15,10 @@ import android.widget.EditText;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.hanium.healthband_protector.Api.API;
+import com.hanium.healthband_protector.postData.postToken;
 import com.hanium.healthband_protector.model.User;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,7 +35,7 @@ import okhttp3.Response;
 public class LoginActivity extends AppCompatActivity {
 
     private String userID = null;
-
+    private String firebaseToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,16 +48,17 @@ public class LoginActivity extends AppCompatActivity {
         Button bt_loginWithBluetooth = findViewById(R.id.bt_loginBluetooth);
         Button bt_register = findViewById(R.id.bt_loginRegister);
 
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener( LoginActivity.this,  new OnSuccessListener<InstanceIdResult>() {
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                firebaseToken = instanceIdResult.getToken();
+                Log.d("asdf", firebaseToken);
+            }
+        });
+
         bt_loginWithID.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener( LoginActivity.this,  new OnSuccessListener<InstanceIdResult>() {
-                    @Override
-                    public void onSuccess(InstanceIdResult instanceIdResult) {
-                        String firebaseToken = instanceIdResult.getToken();
-                        Log.d("asdf", firebaseToken);
-                    }
-                });
                 String userID = et_loginEmail.getText().toString();
                 String userPW = et_loginPW.getText().toString();
                 LoginTask loginTask = new LoginTask(userID, userPW);
@@ -82,7 +84,6 @@ public class LoginActivity extends AppCompatActivity {
         private String userPW;
         private ArrayList<User> linkedUserArrayList = new ArrayList<>();
         private String token;
-        private String firebaseToken;
 
         public LoginTask(String userID, String userPW) {
             this.userID = userID;
@@ -201,7 +202,10 @@ public class LoginActivity extends AppCompatActivity {
                         .create()
                         .show();
             }else{
-                if(true || user.getUser_type().equals("P")) {
+                if(user.getUser_type().equals("P")) {
+                    Log.w("FCMTOKEN" , firebaseToken);
+                    postToken postToken = new postToken(token, firebaseToken, user.getUsername());
+                    postToken.execute(API.postFCM);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.putParcelableArrayListExtra("LinkedUserList", linkedUserArrayList);
                     intent.putExtra("userData", user);

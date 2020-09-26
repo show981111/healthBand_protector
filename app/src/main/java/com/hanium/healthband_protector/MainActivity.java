@@ -79,8 +79,6 @@ public class MainActivity extends AppCompatActivity {
             linkedUserArrayList = getIntent.getParcelableArrayListExtra("LinkedUserList");
             user = getIntent.getParcelableExtra("userData");
             token = getIntent.getStringExtra("token");
-            linkedUserArrayList = new ArrayList<>();
-            linkedUserArrayList.add(new User("w2", "w2", "w2", "w2"));
             if(linkedUserArrayList != null) {
                 for (int i = 0; i < linkedUserArrayList.size(); i++) {
                     Log.d("main", linkedUserArrayList.get(i).getName());
