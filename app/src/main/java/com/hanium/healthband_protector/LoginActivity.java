@@ -163,18 +163,6 @@ public class LoginActivity extends AppCompatActivity {
                             linkedUserArrayList.add(linkedUser);
                         }
 
-//                        JSONArray linkedUserListArray = responseObject.getJSONArray("linked_users");
-//
-//                        for(int i = 0; i < linkedUserListArray.length(); i++){
-//                            JSONObject linkedUserData = linkedUserListArray.getJSONObject(i);
-//                            String linked_username = linkedUserData.getString("username");
-//                            String linked_name = linkedUserData.getString("name");
-//                            String linked_user_type = linkedUserData.getString("user_type");
-//                            String linked_phone_number = linkedUserData.getString("phone_number");
-//
-//                            User linkedUser = new User(linked_username,linked_name,linked_user_type,linked_phone_number);
-//                            linkedUserArrayList.add(linkedUser);
-//                        }
                         User user = new User(username, name, phone_number, user_type);
                         return user;
                     }else{

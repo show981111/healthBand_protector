@@ -266,6 +266,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        bt_send.setVisibility(View.GONE);
+
 
     }
 
